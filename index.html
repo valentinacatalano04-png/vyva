@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f4f4">
+<title>VYVA</title>
+<style>
+:root{--ink:#0b1835;--paper:#f5f4f1;--card:#fff;--line:#dedbd6;--muted:#6f7683;--nav:92px;--blue:#0b244e}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif}
+body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom))}
+button,input,select{font:inherit}button{cursor:pointer}.screen{display:none;min-height:100vh}.screen.on{display:block}.hide{display:none!important}
+.w{max-width:760px;margin:auto;padding:calc(26px + env(safe-area-inset-top)) 20px 150px}.logo{font-size:30px;font-weight:900;letter-spacing:.18em}.muted{color:var(--muted)}h1{font-size:38px;line-height:1.06;margin:28px 0 12px}h2{font-size:25px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;margin:12px 0}
+.hero{background:#10131a;color:#fff;border-radius:30px;padding:25px;margin-top:28px}.hero h1{color:#fff}.btn{border:0;border-radius:18px;padding:17px;width:100%;font-weight:800;background:#111827;color:#fff}.hero .btn{background:#fff;color:#111827}.secondary{background:#e6e2dc;color:#172033}
+.field{margin:17px 0;position:relative}.field label,.sectionLabel{display:block;font-size:12px;font-weight:850;letter-spacing:.03em;margin-bottom:7px}.field input,.field select{width:100%;padding:16px;border:1px solid #d9d5cf;border-radius:16px;background:#fff;outline:none;color:#101827}.field input:focus,.field select:focus{border-color:#172033}.field input[readonly]{background:#f1f3f6;color:#44506a}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.step{display:none}.step.on{display:block}.progress{height:5px;background:#ded9d2;border-radius:5px;margin:20px 0}.progress i{display:block;height:100%;background:#172033;border-radius:5px;transition:width .2s}.choices,.covers,.prefGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choice,.prefChoice{padding:17px;border:1px solid #ded9d2;border-radius:18px;background:#fff;text-align:left;color:#172033}.choice.on,.prefChoice.on{border:2px solid #172033;padding:16px;background:#f6f7f9}.prefChoice .emoji{font-size:24px;display:block;margin-bottom:7px}.prefChoice b{font-size:15px}.prefGroup{margin:21px 0}.prefGroup>label{display:block;font-size:13px;font-weight:850;margin-bottom:9px}
+.actions{position:fixed;left:0;right:0;bottom:calc(var(--nav) + env(safe-area-inset-bottom));z-index:80;padding:10px 20px;background:#f5f4f1ee;backdrop-filter:blur(14px)}.actions>div{max-width:720px;margin:auto;display:flex;gap:8px}.actions button{flex:1}
+.autocomplete{position:absolute;left:0;right:0;top:100%;z-index:120;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 35px #0002;max-height:320px;overflow:auto;margin-top:6px}.suggestion{display:block;width:100%;border:0;border-bottom:1px solid #eee;background:#fff;padding:13px 14px;text-align:left;color:#111827}.suggestion:last-child{border-bottom:0}.suggestion b{font-size:15px}.suggestion small{display:block;color:#6f7683;margin-top:3px;line-height:1.3}
+/* Calendario VYVA: selezione immediata, senza OK */
+.datePicks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}.datePick{border:1px solid #ddd8d1;background:#fff;border-radius:18px;padding:14px;text-align:left;color:#172033}.datePick.on{border:2px solid #172033;padding:13px}.datePick small{display:block;color:#7a8190;font-size:11px;font-weight:800}.datePick b{display:block;margin-top:4px;font-size:16px}.calendar{background:#fff;border:1px solid #e2ded8;border-radius:24px;padding:16px;box-shadow:0 8px 25px #0000000a}.calHead{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;margin-bottom:12px}.calHead button{width:42px;height:42px;border:0;border-radius:50%;background:#f0f2f5;color:#172033;font-size:25px}.calHead button:disabled{opacity:.2}.calTitle{text-align:center;font-weight:850;font-size:18px}.calWeek,.calDays{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calWeek span{text-align:center;font-size:11px;font-weight:800;color:#8a909c;padding:5px 0}.calDay{aspect-ratio:1;border:0;border-radius:50%;background:transparent;color:#172033;font-size:14px}.calDay:hover{background:#eef1f5}.calDay.disabled{color:#c8cbd1;pointer-events:none}.calDay.today{box-shadow:inset 0 0 0 1px #adb5c2}.calDay.selected{background:#172033;color:#fff;font-weight:850}.calDay.inrange{background:#eef1f5;border-radius:12px}.calHint{font-size:13px;color:#697184;text-align:center;margin-top:12px}
+.infoStrip{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.infoBox{background:#eceff3;border-radius:17px;padding:13px}.infoBox small{display:block;color:#6f7683}.infoBox b{font-size:18px}.autoBadge{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:#e9f4ff;color:#0e6fac;font-size:12px;font-weight:800;margin-top:6px}
+.cover{height:235px;border:3px solid transparent;border-radius:22px;background-size:cover;background-position:center;padding:0;position:relative;overflow:hidden}.cover.on{border-color:#172033}.cover:after{content:"";position:absolute;inset:55% 0 0;background:linear-gradient(transparent,#0007)}.cover span{position:absolute;z-index:2;left:12px;bottom:11px;color:#fff;font-weight:800;text-shadow:0 1px 5px #0008}
+.tripmini{display:block;width:100%;height:165px;border:0;border-radius:23px;background-size:cover;background-position:center;position:relative;overflow:hidden;color:#fff;text-align:left;margin:10px 0}.tripmini:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent,#000d)}.tripmini .txt{position:absolute;z-index:2;bottom:15px;left:17px;right:17px}.tripmini b{font-size:22px}.tripmini small{display:block;margin-top:4px}.tripminiWrap{position:relative}.tripminiWrap .tripmini{margin:10px 0}.flightLegTitle{display:flex;align-items:center;gap:10px;margin:24px 0 4px;font-size:16px;font-weight:900;color:#172033}.flightLegTitle:first-child{margin-top:8px}.flightLegTitle:after{content:"";height:1px;flex:1;background:#ddd8d1}.flightLegHint{font-size:12px;color:#727988;margin:-2px 0 8px}
+/* Schermata viaggio: riferimento grafico ufficiale */
+.tripbg{min-height:100vh;background-size:cover;background-position:center top;position:relative;color:#fff;padding-bottom:calc(122px + env(safe-area-inset-bottom))}.tripOverlay{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(4,12,31,.04) 0%,rgba(4,12,31,.03) 44%,rgba(4,12,31,.15) 62%,rgba(243,243,243,.30) 79%,#f3f3f3 100%)}.tripPage{position:relative;z-index:2;max-width:650px;margin:auto;padding:calc(22px + env(safe-area-inset-top)) 22px 42px}.tripHeader{display:flex;justify-content:space-between;align-items:flex-start}.tripVyva{font-size:44px;font-weight:300;letter-spacing:.05em;line-height:.95;text-shadow:0 2px 12px #0007}.tripTagline{font-family:"Snell Roundhand","Segoe Script","Brush Script MT",cursive;font-size:23px;margin:7px 0 0 4px;text-shadow:0 2px 10px #0007}.tripHeaderActions{display:flex;gap:10px}.tripHeaderActions button{display:flex;align-items:center;justify-content:center;width:55px;height:55px;border:0;border-radius:50%;background:rgba(20,24,37,.58);color:#fff;backdrop-filter:blur(12px)}.tripHeaderActions svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tripTitleBlock{text-align:center;margin-top:102px;text-shadow:0 2px 12px #0009}.tripFlags{font-size:35px;line-height:1}.tripTitleBlock h1{font-family:Georgia,"Times New Roman",serif;font-size:49px;font-weight:600;line-height:1;margin:6px 0 8px;color:#fff}.tripCountdown,.tripDateRange{font-size:18px;line-height:1.28}.tripQuick{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:31px 7px 20px}.tripQuick button{border:0;background:none;color:#fff;padding:0}.tripQuick button>span{display:flex;width:60px;height:60px;margin:auto;align-items:center;justify-content:center;border-radius:50%;background:rgba(31,34,44,.68);backdrop-filter:blur(10px)}.tripQuick svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.tripQuick small{display:block;font-size:14px;line-height:1.12;margin-top:7px;text-shadow:0 1px 7px #0009}
+.flightWhiteCard{display:grid;grid-template-columns:1fr 1.18fr 1fr 14px;gap:7px;align-items:center;background:rgba(255,255,255,.97);color:#071b43;border-radius:25px;padding:18px 15px;box-shadow:0 8px 28px #00000020}.flightAirport small{display:block;color:#222;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.flightAirport b{display:block;font-size:34px;line-height:1;margin:5px 0}.flightAirport span{font-size:17px}.flightAirport.right{text-align:right}.flightMiddle{text-align:center}.flightRouteLine{display:flex;align-items:center;gap:4px;color:#198ee8}.flightRouteLine i{height:2px;flex:1;background:#68bef4}.flightRouteLine svg{width:28px;height:28px;fill:#198ee8;stroke:#198ee8;stroke-width:1}.flightMiddle small{display:block;color:#33415e;font-size:12px;margin-top:7px}.chevron{font-size:34px;color:#0b1833}.menuCards{display:grid;gap:9px;margin-top:12px}.menuCard{width:100%;display:grid;grid-template-columns:59px 1fr 18px;align-items:center;border:0;border-radius:23px;background:rgba(255,255,255,.97);color:#091738;padding:12px 14px;text-align:left;box-shadow:0 6px 22px #0000000d}.menuIcon{display:flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:16px}.menuIcon svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.menuIcon.rose{background:#fde2e6;color:#c82a46}.menuIcon.sky{background:#def0fd;color:#1685ca}.menuIcon.mint{background:#e0f1e2;color:#0a9b5b}.menuIcon.gold{background:#fff0d5;color:#d48b00}.menuCopy b{display:block;font-size:18px}.menuCopy small{display:block;font-size:13px;color:#4d5873;margin-top:3px}.menuChevron{font-size:32px;color:#9097aa}.memoryStrip{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:12px;padding:15px 15px;border-radius:25px;background:rgba(224,224,224,.91);color:#102554}.memoryStrip em{font-family:"Snell Roundhand","Segoe Script","Brush Script MT",cursive;font-size:20px;font-style:normal}.memoryStrip .sun{font-size:28px}
+#bottomNav{position:fixed;z-index:1000;left:0;right:0;bottom:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding:7px 7px env(safe-area-inset-bottom);display:grid;grid-template-columns:repeat(6,1fr);background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-radius:29px 29px 0 0;box-shadow:0 -8px 28px #00000012}#bottomNav button{border:0;background:none;color:#4a5570;padding:5px 0 3px;font-size:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}#bottomNav button.on{color:#071b43;font-weight:850}.navIcon{width:27px;height:27px;display:block}.navIcon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.navIcon.filled svg{fill:currentColor;stroke:currentColor}
+@media(max-width:390px){.w{padding-left:16px;padding-right:16px}h1{font-size:34px}.tripPage{padding-left:17px;padding-right:17px}.tripVyva{font-size:40px}.tripTagline{font-size:21px}.tripHeaderActions button{width:51px;height:51px}.tripTitleBlock{margin-top:90px}.tripTitleBlock h1{font-size:44px}.tripCountdown,.tripDateRange{font-size:16px}.tripQuick{gap:5px;margin-left:0;margin-right:0}.tripQuick button>span{width:55px;height:55px}.tripQuick small{font-size:13px}.flightWhiteCard{padding:16px 12px}.flightAirport b{font-size:30px}.menuCopy b{font-size:17px}.menuCopy small{font-size:12px}.memoryStrip em{font-size:18px}.prefChoice{padding:14px}.prefChoice.on{padding:13px}}
+</style>
+
+<style id="vyva-move-weather-css">
+.weatherCard{width:100%;border:0;margin:0 0 12px;padding:14px 16px;border-radius:22px;background:rgba(255,255,255,.94);color:#091738;display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;text-align:left;box-shadow:0 6px 22px #00000012;backdrop-filter:blur(12px)}
+.weatherIcon{width:48px;height:48px;border-radius:15px;background:#e8f3ff;display:flex;align-items:center;justify-content:center;font-size:27px}.weatherCopy b{display:block;font-size:16px}.weatherCopy small{display:block;color:#687187;margin-top:3px;line-height:1.3}.weatherTemp{font-size:25px;font-weight:850;white-space:nowrap}
+.moveHero{background:#10172b;color:#fff;border-radius:27px;padding:20px;margin:16px 0}.moveHero h2{margin:0 0 5px;font-size:27px}.moveHero p{margin:0;color:#cbd2df;line-height:1.4}
+.moveRoute{background:#fff;border:1px solid #dfdcd6;border-radius:22px;padding:16px;margin:13px 0}.moveRoute .field{margin:10px 0}.moveModes{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:14px 0}.moveMode{border:1px solid #ded9d2;border-radius:18px;background:#fff;color:#172033;padding:15px 10px;text-align:left}.moveMode.on{border:2px solid #172033;padding:14px 9px;background:#f5f7fa}.moveMode .mi{font-size:24px;display:block;margin-bottom:6px}
+.providerList{display:grid;gap:10px}.providerCard{background:#fff;border:1px solid #e1ded9;border-radius:20px;padding:16px}.providerHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.providerHead b{font-size:17px}.providerHead small{display:block;color:#747b88;margin-top:4px;line-height:1.35}.providerBadge{background:#eef2f7;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;color:#35425f;white-space:nowrap}
+.providerActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}.providerActions a,.providerActions button{border:0;border-radius:14px;padding:12px;text-align:center;text-decoration:none;font-weight:800;font-size:13px}.providerActions a{background:#101827;color:#fff}.providerActions button{background:#e9edf3;color:#172033}.moveNote{font-size:12px;color:#777f8d;line-height:1.45;margin-top:13px}
+.walletSectionTitle{font-size:14px;font-weight:900;letter-spacing:.03em;margin:22px 0 8px}.walletItem{background:#fff;border:1px solid #e0ddd8;border-radius:20px;padding:15px;margin:9px 0;display:grid;grid-template-columns:44px 1fr 38px;gap:11px;align-items:center}.walletItemIcon{width:44px;height:44px;border-radius:14px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:22px}.walletItem b{display:block;font-size:15px}.walletItem small{display:block;color:#737b8b;margin-top:3px;line-height:1.3}.walletDelete{width:36px;height:36px;border:0;border-radius:50%;background:#f6e8ea;color:#9e2634;font-size:17px}
+.weatherDetail{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:12px 0}.weatherDay{background:#fff;border:1px solid #e1ded8;border-radius:18px;padding:14px;text-align:center}.weatherDay .wi{font-size:28px}.weatherDay b{display:block;margin-top:5px}.weatherDay small{display:block;color:#70788a;margin-top:4px}.sectionAction{border:0;border-radius:15px;background:#e9edf3;color:#172033;padding:12px 14px;font-weight:800}
+</style>
+
+
+<style id="vyva-trip-menu-css">
+.tripMenuBtn{
+  position:absolute;z-index:8;top:13px;right:13px;width:40px;height:40px;
+  border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.94);color:#101827;font-size:22px;font-weight:900;
+  letter-spacing:1px;box-shadow:0 4px 14px #0002;backdrop-filter:blur(10px)
+}
+.tripMenu{
+  position:absolute;z-index:12;top:58px;right:13px;width:174px;padding:6px;
+  border-radius:16px;background:rgba(255,255,255,.98);box-shadow:0 12px 32px #0003;
+  backdrop-filter:blur(18px)
+}
+.tripMenu.hide{display:none}
+.tripMenu button{
+  width:100%;border:0;background:transparent;text-align:left;padding:12px 11px;
+  border-radius:11px;color:#172033;font-size:14px;font-weight:750
+}
+.tripMenu button:active{background:#eef1f5}
+.tripMenu button.danger{color:#a31f2c}
+.tripmini .txt{right:54px}
+</style>
+
+
+<style id="vyva-place-search-css">
+.placeField{position:relative}
+.placeInputRow{display:flex;gap:8px;align-items:center}
+.placeInputRow input{flex:1}
+.locateBtn{
+  flex:0 0 46px;width:46px;height:46px;border:1px solid #d9d6d1;border-radius:15px;
+  background:#f4f6f9;color:#102047;font-size:20px;display:flex;align-items:center;justify-content:center
+}
+.placeSuggestions{
+  position:absolute;z-index:80;left:0;right:0;top:calc(100% + 5px);
+  background:#fff;border:1px solid #dedbd6;border-radius:17px;
+  box-shadow:0 14px 34px #0002;overflow:hidden;max-height:320px;overflow-y:auto
+}
+.placeSuggestions.hide{display:none}
+.placeSuggestion{
+  width:100%;border:0;border-bottom:1px solid #efede9;background:#fff;
+  padding:12px 13px;display:grid;grid-template-columns:35px 1fr;gap:10px;
+  text-align:left;color:#15213d
+}
+.placeSuggestion:last-child{border-bottom:0}
+.placeSuggestion:active{background:#f3f5f8}
+.placeSuggestion .psi{
+  width:35px;height:35px;border-radius:11px;background:#edf2f7;
+  display:flex;align-items:center;justify-content:center;font-size:18px
+}
+.placeSuggestion b{display:block;font-size:14px;line-height:1.25}
+.placeSuggestion small{display:block;color:#71798a;font-size:12px;line-height:1.35;margin-top:2px}
+.placeSearching,.placeEmpty{
+  padding:12px 14px;color:#71798a;font-size:13px
+}
+.placeCredit{
+  display:block;margin-top:8px;color:#8a909b;font-size:10px;text-align:right
+}
+</style>
+
+
+<style id="vyva-mobility-advisor-css">
+.mobilityAdvisor{
+  background:#fff;border:1px solid #dfdcd7;border-radius:24px;padding:17px;margin:0 0 14px;
+  color:#14203d;box-shadow:0 5px 18px #0000000b
+}
+.mobilityAdvisor h3{margin:0 0 6px;font-size:20px}
+.mobilityAdvisor p{margin:0;color:#667085;line-height:1.42;font-size:14px}
+.mobilityTagRow{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+.mobilityTag{border:1px solid #dcd9d3;background:#f7f8fa;border-radius:999px;padding:8px 10px;font-size:12px;font-weight:800;color:#24314e}
+.mobilityTag.on{background:#14203d;color:#fff;border-color:#14203d}
+.mobilityTip{
+  background:#edf4ff;border-radius:17px;padding:13px 14px;margin:12px 0;color:#16386b;
+  font-size:13px;line-height:1.4
+}
+.mobilityLinks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.mobilityLinks a,.mobilityLinks button{
+  text-decoration:none;border:0;border-radius:14px;padding:12px 10px;font-size:12px;font-weight:850;text-align:center
+}
+.mobilityLinks a{background:#14203d;color:#fff}.mobilityLinks button{background:#edf0f5;color:#14203d}
+.routeChoices{display:grid;gap:10px;margin:14px 0}
+.routeChoice{
+  background:#fff;border:1px solid #ddd9d3;border-radius:21px;padding:15px;color:#14203d
+}
+.routeChoiceTop{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center}
+.routeChoiceIcon{width:42px;height:42px;border-radius:13px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:22px}
+.routeChoice b{display:block;font-size:16px}.routeChoice small{display:block;color:#6d7687;line-height:1.35;margin-top:3px}
+.routeChoice .openRoute{
+  display:block;margin-top:12px;text-decoration:none;background:#111a2d;color:#fff;
+  padding:11px 13px;border-radius:13px;font-weight:850;font-size:13px;text-align:center
+}
+.routeChoice .secondaryRoute{
+  display:block;margin-top:7px;text-decoration:none;background:#eef1f5;color:#15213d;
+  padding:10px 13px;border-radius:13px;font-weight:800;font-size:12px;text-align:center
+}
+.routeLiveNotice{
+  background:#fff7df;border:1px solid #f0dfad;border-radius:17px;padding:12px 13px;
+  color:#5f4a14;font-size:12px;line-height:1.45;margin:10px 0
+}
+.ticketPick{
+  display:grid;grid-template-columns:44px 1fr;gap:11px;align-items:start;
+  border:1px solid #dfddd8;border-radius:18px;padding:13px;margin:9px 0;background:#fff
+}
+.ticketPickIcon{width:44px;height:44px;border-radius:14px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:22px}
+.ticketPick b{display:block}.ticketPick small{display:block;color:#6d7586;line-height:1.4;margin-top:3px}
+.ticketActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.ticketActions a,.ticketActions button{
+  border:0;text-decoration:none;background:#14203d;color:#fff;border-radius:12px;
+  padding:9px 11px;font-size:11px;font-weight:850
+}
+.ticketActions button{background:#edf0f5;color:#14203d}
+</style>
+
+
+<style id="vyva-mobility-collapse-css">
+.mobilityAccordion{
+  background:#fff;border:1px solid #dfdcd7;border-radius:24px;margin:0 0 14px;
+  color:#14203d;box-shadow:0 5px 18px #0000000b;overflow:hidden
+}
+.mobilityAccordionHead{
+  width:100%;border:0;background:#fff;color:#14203d;padding:17px 18px;
+  display:grid;grid-template-columns:1fr 30px;gap:12px;align-items:center;text-align:left
+}
+.mobilityAccordionHead strong{font-size:20px;line-height:1.2}
+.mobilityAccordionHead small{display:block;color:#6b7486;font-size:13px;margin-top:5px;line-height:1.35}
+.mobilityAccordionChevron{
+  width:30px;height:30px;border-radius:50%;background:#eef1f5;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  transition:transform .22s ease
+}
+.mobilityAccordion.open .mobilityAccordionChevron{transform:rotate(180deg)}
+.mobilityAccordionBody{display:none;padding:0 17px 17px}
+.mobilityAccordion.open .mobilityAccordionBody{display:block}
+.mobilityAccordionBody .mobilityAdvisor{
+  margin:0;padding:0;border:0;box-shadow:none;background:transparent
+}
+</style>
+
+
+<style id="vyva-personal-move-summary-css">
+.personalMoveSummary{
+  margin:0 0 12px;padding:13px 14px;border-radius:17px;
+  background:#eef4ff;color:#17386b;font-size:13px;line-height:1.42
+}
+.personalMoveSummary b{color:#112b57}
+</style>
+
+
+<style id="vyva-arrival-guide-css">
+.arrivalAccordion{
+  background:#fff;border:1px solid #dfdcd7;border-radius:24px;margin:0 0 14px;
+  color:#14203d;box-shadow:0 5px 18px #0000000b;overflow:hidden
+}
+.arrivalAccordionHead{
+  width:100%;border:0;background:#fff;color:#14203d;padding:17px 18px;
+  display:grid;grid-template-columns:1fr 30px;gap:12px;align-items:center;text-align:left
+}
+.arrivalAccordionHead strong{font-size:19px;line-height:1.2}
+.arrivalAccordionHead small{display:block;color:#6b7486;font-size:13px;margin-top:5px;line-height:1.35}
+.arrivalAccordionChevron{
+  width:30px;height:30px;border-radius:50%;background:#eef1f5;
+  display:flex;align-items:center;justify-content:center;font-size:20px;transition:transform .22s ease
+}
+.arrivalAccordion.open .arrivalAccordionChevron{transform:rotate(180deg)}
+.arrivalAccordionBody{display:none;padding:0 17px 17px}
+.arrivalAccordion.open .arrivalAccordionBody{display:block}
+.arrivalStep{
+  display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;
+  padding:11px 0;border-bottom:1px solid #ece9e4
+}
+.arrivalStep:last-child{border-bottom:0}
+.arrivalNum{
+  width:30px;height:30px;border-radius:50%;background:#14203d;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900
+}
+.arrivalStep b{display:block;font-size:14px}
+.arrivalStep small{display:block;color:#687187;font-size:12px;line-height:1.42;margin-top:3px}
+.arrivalButtons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.arrivalButtons a{
+  text-decoration:none;border-radius:13px;padding:11px;text-align:center;
+  font-size:11px;font-weight:850;background:#14203d;color:#fff
+}
+.arrivalButtons a.secondary{background:#edf0f5;color:#14203d}
+.arrivalCaution{
+  background:#fff7df;border:1px solid #f0dfad;color:#5f4a14;
+  border-radius:15px;padding:11px 12px;font-size:12px;line-height:1.4;margin-top:10px
+}
+</style>
+
+</head>
+<body>
+<section id="home" class="screen on"><div class="w">
+  <div class="logo">VYVA</div><div class="muted">More than a trip ♡</div>
+  <div class="hero"><small>IL TUO PROSSIMO RICORDO</small><h1>Costruiamo il viaggio intorno a ciò che vorrai ricordare.</h1><p>Organizza, vivi e custodisci ogni momento in un unico posto.</p><button class="btn" onclick="startCreate()">＋ Crea un viaggio</button></div>
+  <h2>I miei viaggi</h2><div id="homeTrips"></div>
+</div></section>
+
+<section id="create" class="screen"><div class="w">
+  <button onclick="go('home')" class="choice">‹ Home</button><h2>Crea viaggio</h2>
+  <div class="progress"><i id="bar"></i></div><div id="stepLabel" class="muted"></div>
+
+  <div class="step on">
+    <h1>Dove vuoi andare?</h1><p class="muted">Scrivi anche solo le prime lettere e scegli direttamente la città dall’elenco.</p>
+    <div class="field"><label>DESTINAZIONE</label><input id="destination" autocomplete="off" placeholder="Es. Londra" oninput="citySearch()"><div id="citySuggestions" class="autocomplete hide"></div></div>
+  </div>
+
+  <div class="step">
+    <h1>Quando parti?</h1><p class="muted">Tocca il giorno: la data viene inserita subito, senza altri pulsanti.</p>
+    <input id="startDate" type="hidden"><input id="endDate" type="hidden">
+    <div class="datePicks">
+      <button id="startPick" class="datePick on" onclick="setCalendarTarget('start')"><small>PARTENZA</small><b id="startDateText">Scegli data</b></button>
+      <button id="endPick" class="datePick" onclick="setCalendarTarget('end')"><small>RITORNO</small><b id="endDateText">Scegli data</b></button>
+    </div>
+    <div class="calendar">
+      <div class="calHead"><button id="calPrev" onclick="moveCalendar(-1)">‹</button><div id="calTitle" class="calTitle"></div><button onclick="moveCalendar(1)">›</button></div>
+      <div class="calWeek"><span>Lun</span><span>Mar</span><span>Mer</span><span>Gio</span><span>Ven</span><span>Sab</span><span>Dom</span></div>
+      <div id="calDays" class="calDays"></div>
+      <div id="calHint" class="calHint">Seleziona la partenza.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <h1>Chi viaggia?</h1><p class="muted">Dividiamo i viaggiatori per fascia d’età.</p>
+    <div class="two">
+      <div class="field"><label>ADULTI 18+</label><select id="adults" onchange="buildTravelerNames()"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+      <div class="field"><label>RAGAZZI 13–17</label><select id="teens" onchange="buildTravelerNames()"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+      <div class="field"><label>BAMBINI 3–12</label><select id="children" onchange="buildTravelerNames()"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+      <div class="field"><label>NEONATI 0–2</label><select id="infants" onchange="buildTravelerNames()"><option>0</option><option>1</option><option>2</option><option>3</option></select></div>
+    </div>
+    <div id="travelerNames"></div>
+  </div>
+
+  <div class="step">
+    <h1>Come ci arrivi?</h1>
+    <div class="choices" id="transportChoices">
+      <button class="choice on" data-v="Volo" onclick="pickTransport(this)">✈️<br><b>Volo</b></button>
+      <button class="choice" data-v="Treno" onclick="pickTransport(this)">🚆<br><b>Treno</b></button>
+      <button class="choice" data-v="Bus" onclick="pickTransport(this)">🚌<br><b>Bus</b></button>
+      <button class="choice" data-v="Auto" onclick="pickTransport(this)">🚗<br><b>Auto</b></button>
+      <button class="choice" data-v="Traghetto" onclick="pickTransport(this)">⛴️<br><b>Traghetto</b></button>
+      <button class="choice" data-v="Altro" onclick="pickTransport(this)">＋<br><b>Altro</b></button>
+    </div>
+    <div id="flightFields">
+      <div class="flightLegTitle">✈️ Volo di andata</div>
+      <div class="field"><label>AEROPORTO DI PARTENZA</label><input id="fromAirport" autocomplete="off" placeholder="Città, aeroporto o IATA" oninput="airportSearch('from')"><div id="fromSuggestions" class="autocomplete hide"></div></div>
+      <div class="field"><label>AEROPORTO DI ARRIVO</label><input id="toAirport" autocomplete="off" placeholder="Città, aeroporto o IATA" oninput="airportSearch('to')"><div id="toSuggestions" class="autocomplete hide"></div></div>
+      <div class="two">
+        <div class="field"><label>DATA PARTENZA VOLO</label><input id="flightDepartDate" type="date" onchange="recalcFlight()"></div>
+        <div class="field"><label>ORARIO PARTENZA</label><input id="departTime" type="time" oninput="recalcFlight()"></div>
+      </div>
+      <div class="autoBadge">✦ Arrivo calcolato automaticamente con il fuso orario</div>
+      <div class="two">
+        <div class="field"><label>DATA ARRIVO</label><input id="flightArrivalDate" type="date" readonly></div>
+        <div class="field"><label>ORARIO ARRIVO</label><input id="arrivalTime" type="time" readonly></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>NUMERO VOLO</label><input id="flightNo" placeholder="Es. U2 2834"></div>
+        <div class="field"><label>CODICE PRENOTAZIONE</label><input id="bookingCode" placeholder="Es. AB12CD"></div>
+      </div>
+      <div class="infoStrip"><div class="infoBox"><small>DURATA STIMATA</small><b id="flightDuration">—</b></div><div class="infoBox"><small>DIFFERENZA FUSO</small><b id="timezoneDiff">—</b></div></div>
+      <div id="flightHint" class="muted" style="font-size:13px"></div>
+
+      <div class="flightLegTitle">↩️ Volo di ritorno</div>
+      <div class="flightLegHint">Gli aeroporti vengono già invertiti dall’andata. Puoi modificarli se il ritorno parte o arriva da un aeroporto diverso.</div>
+      <div class="field"><label>AEROPORTO DI PARTENZA RITORNO</label><input id="returnFromAirport" autocomplete="off" placeholder="Città, aeroporto o IATA" oninput="airportSearch('returnFrom')"><div id="returnFromSuggestions" class="autocomplete hide"></div></div>
+      <div class="field"><label>AEROPORTO DI ARRIVO RITORNO</label><input id="returnToAirport" autocomplete="off" placeholder="Città, aeroporto o IATA" oninput="airportSearch('returnTo')"><div id="returnToSuggestions" class="autocomplete hide"></div></div>
+      <div class="two">
+        <div class="field"><label>DATA PARTENZA RITORNO</label><input id="returnFlightDepartDate" type="date" onchange="recalcReturnFlight()"></div>
+        <div class="field"><label>ORARIO PARTENZA</label><input id="returnDepartTime" type="time" oninput="recalcReturnFlight()"></div>
+      </div>
+      <div class="autoBadge">✦ Arrivo ritorno calcolato automaticamente con il fuso orario</div>
+      <div class="two">
+        <div class="field"><label>DATA ARRIVO RITORNO</label><input id="returnFlightArrivalDate" type="date" readonly></div>
+        <div class="field"><label>ORARIO ARRIVO</label><input id="returnArrivalTime" type="time" readonly></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>NUMERO VOLO RITORNO</label><input id="returnFlightNo" placeholder="Es. U2 2835"></div>
+        <div class="field"><label>CODICE PRENOTAZIONE</label><input id="returnBookingCode" placeholder="Es. AB12CD"></div>
+      </div>
+      <div class="infoStrip"><div class="infoBox"><small>DURATA STIMATA</small><b id="returnFlightDuration">—</b></div><div class="infoBox"><small>DIFFERENZA FUSO</small><b id="returnTimezoneDiff">—</b></div></div>
+      <div id="returnFlightHint" class="muted" style="font-size:13px"></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <h1>Che viaggio vuoi vivere?</h1><p class="muted">Come nelle prime versioni: scegli le caselle che ti rappresentano.</p>
+    <input id="style" type="hidden" value="Scoperta"><input id="pace" type="hidden" value="Equilibrato"><input id="budget" type="hidden" value="Comfort"><input id="occasion" type="hidden" value="Nessuna">
+    <div class="prefGroup"><label>STILE</label><div class="prefGrid" data-key="style">
+      <button class="prefChoice" data-v="Relax" onclick="pickPref('style','Relax',this)"><span class="emoji">🌿</span><b>Relax</b></button>
+      <button class="prefChoice on" data-v="Scoperta" onclick="pickPref('style','Scoperta',this)"><span class="emoji">📸</span><b>Scoperta</b></button>
+      <button class="prefChoice" data-v="Romantico" onclick="pickPref('style','Romantico',this)"><span class="emoji">❤️</span><b>Romantico</b></button>
+      <button class="prefChoice" data-v="Famiglia" onclick="pickPref('style','Famiglia',this)"><span class="emoji">👨‍👩‍👧</span><b>Famiglia</b></button>
+      <button class="prefChoice" data-v="Avventura" onclick="pickPref('style','Avventura',this)"><span class="emoji">🧭</span><b>Avventura</b></button>
+      <button class="prefChoice" data-v="Food & Culture" onclick="pickPref('style','Food & Culture',this)"><span class="emoji">🍝</span><b>Food & Culture</b></button>
+    </div></div>
+    <div class="prefGroup"><label>RITMO</label><div class="prefGrid" data-key="pace">
+      <button class="prefChoice" data-v="Lento" onclick="pickPref('pace','Lento',this)"><span class="emoji">🐢</span><b>Lento</b></button>
+      <button class="prefChoice on" data-v="Equilibrato" onclick="pickPref('pace','Equilibrato',this)"><span class="emoji">⚖️</span><b>Equilibrato</b></button>
+      <button class="prefChoice" data-v="Intenso" onclick="pickPref('pace','Intenso',this)"><span class="emoji">⚡</span><b>Intenso</b></button>
+    </div></div>
+    <div class="prefGroup"><label>BUDGET</label><div class="prefGrid" data-key="budget">
+      <button class="prefChoice" data-v="Essenziale" onclick="pickPref('budget','Essenziale',this)"><span class="emoji">€</span><b>Essenziale</b></button>
+      <button class="prefChoice on" data-v="Comfort" onclick="pickPref('budget','Comfort',this)"><span class="emoji">€€</span><b>Comfort</b></button>
+      <button class="prefChoice" data-v="Premium" onclick="pickPref('budget','Premium',this)"><span class="emoji">€€€</span><b>Premium</b></button>
+    </div></div>
+    <div class="prefGroup"><label>OCCASIONE</label><div class="prefGrid" data-key="occasion">
+      <button class="prefChoice on" data-v="Nessuna" onclick="pickPref('occasion','Nessuna',this)"><span class="emoji">✨</span><b>Nessuna</b></button>
+      <button class="prefChoice" data-v="Compleanno" onclick="pickPref('occasion','Compleanno',this)"><span class="emoji">🎂</span><b>Compleanno</b></button>
+      <button class="prefChoice" data-v="Anniversario" onclick="pickPref('occasion','Anniversario',this)"><span class="emoji">💍</span><b>Anniversario</b></button>
+      <button class="prefChoice" data-v="Luna di miele" onclick="pickPref('occasion','Luna di miele',this)"><span class="emoji">🥂</span><b>Luna di miele</b></button>
+      <button class="prefChoice" data-v="Altro" onclick="pickPref('occasion','Altro',this)"><span class="emoji">🎉</span><b>Altro</b></button>
+    </div></div>
+    <div id="whoseWrap" class="field hide"><label>DI CHI?</label><select id="whose"></select></div>
+  </div>
+
+  <div class="step">
+    <h1>Scegli la copertina</h1><p class="muted">La copertina la scegli tu. Sarà lo sfondo immersivo del viaggio.</p><div id="covers" class="covers"></div>
+  </div>
+</div>
+<div id="actions" class="actions hide"><div><button class="btn secondary" onclick="prevStep()">Indietro</button><button id="nextBtn" class="btn" onclick="nextStep()">Continua</button></div></div>
+</section>
+
+<section id="trip" class="screen"><div id="tripbg" class="tripbg"><div class="tripOverlay"></div><div class="tripPage">
+  <header class="tripHeader"><div><div class="tripVyva">VYVA</div><div class="tripTagline">More than a trip ♡</div></div><div class="tripHeaderActions">
+    <button aria-label="Cerca"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></button>
+    <button aria-label="Altro"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.8" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.8" fill="currentColor" stroke="none"/></svg></button>
+  </div></header>
+  <div class="tripTitleBlock"><div class="tripFlags" id="tripFlags">🇬🇧 🇮🇹</div><h1 id="tdest"></h1><div id="tcount" class="tripCountdown"></div><div id="tdates" class="tripDateRange"></div></div>
+  <div class="tripQuick">
+    <button><span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 9h18"/></svg></span><small>Nuova<br>Attività</small></button>
+    <button><span><svg viewBox="0 0 24 24"><path d="m2 16 8-3V4.8a2 2 0 0 1 4 0V13l8 3v2l-8-1.3V21l2 1v1l-4-1-4 1v-1l2-1v-4.3L2 18z"/></svg></span><small id="ttransport">Voli</small></button>
+    <button><span><svg viewBox="0 0 24 24"><path d="M3 20V8M21 20v-7a3 3 0 0 0-3-3H9v7h12M3 17h18"/><rect x="4" y="7" width="5" height="6" rx="1.5"/></svg></span><small>Hotel</small></button>
+    <button><span><svg viewBox="0 0 24 24"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2z"/><path d="M9 3v16M15 5v16"/></svg></span><small>Guida<br>Città</small></button>
+  </div>
+
+  <button id="weatherCard" class="weatherCard" onclick="openWeatherPanel()">
+    <span id="weatherIcon" class="weatherIcon">☀️</span>
+    <span class="weatherCopy"><b id="weatherTitle">Meteo a destinazione</b><small id="weatherText">Caricamento meteo…</small></span>
+    <span id="weatherTemp" class="weatherTemp">—</span>
+  </button>
+
+  <div id="routeCard" class="flightWhiteCard"><div class="flightAirport"><small id="fromCity">Partenza</small><b id="fcode">—</b><span id="departOnly"></span></div><div class="flightMiddle"><div class="flightRouteLine"><i></i><svg viewBox="0 0 24 24"><path d="m2 16 8-3V4.8a2 2 0 0 1 4 0V13l8 3v2l-8-1.3V21l2 1v1l-4-1-4 1v-1l2-1v-4.3L2 18z"/></svg><i></i></div><small id="flightDateCenter"></small></div><div class="flightAirport right"><small id="toCity">Arrivo</small><b id="tcode">—</b><span id="arrivalOnly"></span></div><div class="chevron">›</div></div>
+  <div class="menuCards">
+    <button class="menuCard"><span class="menuIcon rose"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 9h18"/></svg></span><span class="menuCopy"><b>Itinerario</b><small>Scopri il programma giorno per giorno</small></span><span class="menuChevron">›</span></button>
+    <button class="menuCard"><span class="menuIcon sky"><svg viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v5h5M9 12h6M9 16h6"/></svg></span><span class="menuCopy"><b>Documenti</b><small>Passaporti, prenotazioni, biglietti</small></span><span class="menuChevron">›</span></button>
+    <button class="menuCard"><span class="menuIcon mint"><svg viewBox="0 0 24 24"><path d="M12 22s7-6.4 7-13A7 7 0 0 0 5 9c0 6.6 7 13 7 13z"/><circle cx="12" cy="9" r="2.4"/></svg></span><span class="menuCopy"><b>Esperienze</b><small>Attività, tour e cose da non perdere</small></span><span class="menuChevron">›</span></button>
+
+    <button class="menuCard" onclick="openMovePanel()"><span class="menuIcon sky"><svg viewBox="0 0 24 24"><path d="M4 17h16M6 17V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v9M7 10h10M8 21v-2M16 21v-2"/><circle cx="8" cy="14" r="1"/><circle cx="16" cy="14" r="1"/></svg></span><span class="menuCopy"><b>Move</b><small>Metro, bus, tram, treni, taxi e ride-hailing</small></span><span class="menuChevron">›</span></button>
+
+    <button class="menuCard"><span class="menuIcon gold"><svg viewBox="0 0 24 24"><path d="M4 7h4l1.5-2h5L16 7h4a2 2 0 0 1 2 2v10H2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4"/></svg></span><span class="menuCopy"><b>Moments</b><small>Foto, video e ricordi speciali</small></span><span class="menuChevron">›</span></button>
+  </div>
+  <div class="memoryStrip"><span class="sun">☼</span><em>Colleziona momenti, non cose</em><span>♡</span></div>
+</div></div></section>
+
+<section id="panel" class="screen"><div class="w"><h1 id="ptitle"></h1><p id="ptext" class="muted"></p><div id="pbody"></div></div></section>
+
+<nav id="bottomNav">
+<button class="on" data-t="home" onclick="navTo('home')"><span class="navIcon filled"><svg viewBox="0 0 24 24"><path d="M3 10.7 12 3l9 7.7v9.1a1.2 1.2 0 0 1-1.2 1.2h-5.1v-6.6H9.3V21H4.2A1.2 1.2 0 0 1 3 19.8z"/></svg></span><span>Home</span></button>
+<button data-t="Viaggi" onclick="navTo('Viaggi')"><span class="navIcon"><svg viewBox="0 0 24 24"><path d="M8 7V5.5A2.5 2.5 0 0 1 10.5 3h3A2.5 2.5 0 0 1 16 5.5V7"/><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7v13M15 7v13M4 11h16"/></svg></span><span>Viaggi</span></button>
+<button data-t="Wallet" onclick="navTo('Wallet')"><span class="navIcon"><svg viewBox="0 0 24 24"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18a2 2 0 0 1 2 2v2H7a3 3 0 0 0 0 6h13v2a2 2 0 0 1-2 2H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M20 9H7a3 3 0 0 0 0 6h13z"/><circle cx="8.5" cy="12" r=".8"/></svg></span><span>Wallet</span></button>
+<button data-t="Move" onclick="navTo('Move')"><span class="navIcon"><svg viewBox="0 0 24 24"><path d="M4 17h16M6 17V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v9M7 10h10M8 21v-2M16 21v-2"/><circle cx="8" cy="14" r="1"/><circle cx="16" cy="14" r="1"/></svg></span><span>Move</span></button>
+<button data-t="Moments" onclick="navTo('Moments')"><span class="navIcon"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 1 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6z"/></svg></span><span>Moments</span></button>
+<button data-t="Profilo" onclick="navTo('Profilo')"><span class="navIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4.5 21v-2.5A5.5 5.5 0 0 1 10 13h4a5.5 5.5 0 0 1 5.5 5.5V21z"/></svg></span><span>Profilo</span></button>
+</nav>
+
+<script>
+const $=id=>document.getElementById(id);
+const STORE='vyvaTripsClean';
+const CURRENT='vyvaCurrentTripClean';
+const BUILD='vyva-clean-2026-09-13-v3';
+if(localStorage.getItem('vyvaBuild')!==BUILD){localStorage.removeItem('vyvaTrips');localStorage.removeItem('vyvaCurrentTrip');localStorage.removeItem(STORE);localStorage.removeItem(CURRENT);localStorage.setItem('vyvaBuild',BUILD)}
+
+const AIRPORTS=[
+['Milano','Malpensa','MXP','Italia','IT','Europe/Rome',45.6306,8.7281],['Milano','Linate','LIN','Italia','IT','Europe/Rome',45.4451,9.2767],['Bergamo','Orio al Serio','BGY','Italia','IT','Europe/Rome',45.6739,9.7042],
+['Roma','Fiumicino','FCO','Italia','IT','Europe/Rome',41.8003,12.2389],['Roma','Ciampino','CIA','Italia','IT','Europe/Rome',41.7994,12.5949],['Venezia','Marco Polo','VCE','Italia','IT','Europe/Rome',45.5053,12.3519],['Torino','Caselle','TRN','Italia','IT','Europe/Rome',45.2008,7.6496],['Bologna','Guglielmo Marconi','BLQ','Italia','IT','Europe/Rome',44.5354,11.2887],['Napoli','Capodichino','NAP','Italia','IT','Europe/Rome',40.886,14.2908],['Palermo','Falcone Borsellino','PMO','Italia','IT','Europe/Rome',38.1759,13.091],['Catania','Fontanarossa','CTA','Italia','IT','Europe/Rome',37.4668,15.0664],
+['Londra','Heathrow','LHR','Regno Unito','GB','Europe/London',51.47,-0.4543],['Londra','Gatwick','LGW','Regno Unito','GB','Europe/London',51.1537,-0.1821],['Londra','Stansted','STN','Regno Unito','GB','Europe/London',51.885,0.235],['Londra','Luton','LTN','Regno Unito','GB','Europe/London',51.8747,-0.3683],['Londra','City','LCY','Regno Unito','GB','Europe/London',51.5053,0.0553],
+['Parigi','Charles de Gaulle','CDG','Francia','FR','Europe/Paris',49.0097,2.5479],['Parigi','Orly','ORY','Francia','FR','Europe/Paris',48.7262,2.3652],['Madrid','Adolfo Suárez Madrid-Barajas','MAD','Spagna','ES','Europe/Madrid',40.4983,-3.5676],['Barcellona','El Prat','BCN','Spagna','ES','Europe/Madrid',41.2974,2.0833],['Amsterdam','Schiphol','AMS','Paesi Bassi','NL','Europe/Amsterdam',52.3105,4.7683],['Francoforte','Frankfurt Airport','FRA','Germania','DE','Europe/Berlin',50.0379,8.5622],['Monaco','Franz Josef Strauss','MUC','Germania','DE','Europe/Berlin',48.3538,11.7861],['Zurigo','Zürich Airport','ZRH','Svizzera','CH','Europe/Zurich',47.4581,8.5555],['Vienna','Vienna International','VIE','Austria','AT','Europe/Vienna',48.1103,16.5697],['Lisbona','Humberto Delgado','LIS','Portogallo','PT','Europe/Lisbon',38.7742,-9.1342],['Dublino','Dublin Airport','DUB','Irlanda','IE','Europe/Dublin',53.4213,-6.2701],['Atene','Eleftherios Venizelos','ATH','Grecia','GR','Europe/Athens',37.9364,23.9445],['Istanbul','Istanbul Airport','IST','Turchia','TR','Europe/Istanbul',41.2753,28.7519],
+['New York','John F. Kennedy','JFK','USA','US','America/New_York',40.6413,-73.7781],['New York','LaGuardia','LGA','USA','US','America/New_York',40.7769,-73.874],['Newark','Newark Liberty','EWR','USA','US','America/New_York',40.6895,-74.1745],['Los Angeles','Los Angeles International','LAX','USA','US','America/Los_Angeles',33.9416,-118.4085],['San Francisco','San Francisco International','SFO','USA','US','America/Los_Angeles',37.6213,-122.379],['Miami','Miami International','MIA','USA','US','America/New_York',25.7959,-80.287],['Chicago','O’Hare','ORD','USA','US','America/Chicago',41.9742,-87.9073],['Toronto','Pearson','YYZ','Canada','CA','America/Toronto',43.6777,-79.6248],['Vancouver','Vancouver International','YVR','Canada','CA','America/Vancouver',49.1967,-123.1815],
+['Dubai','Dubai International','DXB','Emirati Arabi Uniti','AE','Asia/Dubai',25.2532,55.3657],['Doha','Hamad International','DOH','Qatar','QA','Asia/Qatar',25.2731,51.6081],['Abu Dhabi','Zayed International','AUH','Emirati Arabi Uniti','AE','Asia/Dubai',24.433,54.6511],['Tokyo','Haneda','HND','Giappone','JP','Asia/Tokyo',35.5494,139.7798],['Tokyo','Narita','NRT','Giappone','JP','Asia/Tokyo',35.7719,140.3929],['Seoul','Incheon','ICN','Corea del Sud','KR','Asia/Seoul',37.4602,126.4407],['Singapore','Changi','SIN','Singapore','SG','Asia/Singapore',1.3644,103.9915],['Bangkok','Suvarnabhumi','BKK','Thailandia','TH','Asia/Bangkok',13.69,100.7501],['Hong Kong','Hong Kong International','HKG','Hong Kong','HK','Asia/Hong_Kong',22.308,113.9185],['Sydney','Kingsford Smith','SYD','Australia','AU','Australia/Sydney',-33.9399,151.1753],['Melbourne','Melbourne Airport','MEL','Australia','AU','Australia/Melbourne',-37.669,144.841],['Città del Capo','Cape Town International','CPT','Sudafrica','ZA','Africa/Johannesburg',-33.97,18.6017],['Johannesburg','O. R. Tambo','JNB','Sudafrica','ZA','Africa/Johannesburg',-26.1337,28.242],['Marrakech','Menara','RAK','Marocco','MA','Africa/Casablanca',31.6069,-8.0363],['Il Cairo','Cairo International','CAI','Egitto','EG','Africa/Cairo',30.1219,31.4056],['São Paulo','Guarulhos','GRU','Brasile','BR','America/Sao_Paulo',-23.4356,-46.4731],['Buenos Aires','Ezeiza','EZE','Argentina','AR','America/Argentina/Buenos_Aires',-34.8222,-58.5358],['Città del Messico','Benito Juárez','MEX','Messico','MX','America/Mexico_City',19.4361,-99.0719]
+].map(a=>({city:a[0],name:a[1],iata:a[2],country:a[3],cc:a[4],tz:a[5],lat:a[6],lon:a[7]}));
+
+const COVERS=[
+['Big Ben & Westminster','https://images.unsplash.com/photo-1782778463934-083f7d93f2da?auto=format&fit=crop&w=1800&h=3200&q=92'],
+['Oxford Street','https://images.unsplash.com/photo-1737823832671-d4278127ce17?auto=format&fit=crop&w=1800&h=3200&q=92'],
+['Tower Bridge','https://images.unsplash.com/photo-1643722572578-d16d820b23ce?auto=format&fit=crop&w=1800&h=3200&q=92'],
+['London Eye','https://images.unsplash.com/photo-1694934985423-9fe08c27bb56?auto=format&fit=crop&w=1800&h=3200&q=92'],
+['Notting Hill','https://images.unsplash.com/photo-1729897671630-b335eca8045f?auto=format&fit=crop&w=1800&h=3200&q=92'],
+['St Paul’s','https://images.unsplash.com/photo-1448906654166-444d494666b3?auto=format&fit=crop&w=1800&h=3200&q=92'],
+['London Skyline','https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1800&h=3200&q=92'],
+['London Street','https://images.unsplash.com/photo-1529655683826-aba9b3e77383?auto=format&fit=crop&w=1800&h=3200&q=92'],
+['London Classic','https://images.unsplash.com/photo-1486299267070-83823f5448dd?auto=format&fit=crop&w=1800&h=3200&q=92'],
+['Westminster','https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1800&h=3200&q=92']
+];
+const POPULAR_CITIES=['Londra','Lisbona','Lione','Liverpool','Los Angeles','Las Vegas','Lima','Lussemburgo','Lucerna','Lecce','Livorno','Lucca','Lugano','Parigi','Praga','Palermo','Porto','Pisa','Madrid','Milano','Miami','Monaco','Marrakech','Manchester','Melbourne','New York','Napoli','Nizza','Tokyo','Torino','Toronto','Roma','Reykjavík','Rio de Janeiro','Barcellona','Berlino','Bruxelles','Budapest','Bologna','Bangkok','Buenos Aires','Dubai','Dublino','Doha','Amsterdam','Atene','Abu Dhabi','Vienna','Venezia','Valencia','Zurigo','Zagabria','Singapore','Seoul','Sydney','San Francisco','Siviglia','Stoccolma','Copenaghen','Chicago','Città del Capo','Città del Messico','Il Cairo','Istanbul'];
+let worldCities=[],cityResults=[],cityTimer=null,selectedDestination=null;
+let step=0,transport='Volo',selectedCover=0,selectedFrom=null,selectedTo=null,selectedReturnFrom=null,selectedReturnTo=null,returnFromCustom=false,returnToCustom=false;
+let calendarTarget='start',calendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+
+function norm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+async function loadWorldCities(){
+ try{const r=await fetch('https://countriesnow.space/api/v0.1/countries');const j=await r.json();if(!j.error&&Array.isArray(j.data)){const out=[];for(const c of j.data){for(const name of (c.cities||[]))out.push({name,country:c.country,countryCode:c.iso2||'',source:'world'})}worldCities=out;if($('destination').value.trim())citySearch()}}
+ catch(e){worldCities=[]}
+}
+function citySearch(){selectedDestination=null;clearTimeout(cityTimer);const q=$('destination').value.trim(),box=$('citySuggestions');if(!q){box.classList.add('hide');return}const nq=norm(q);const popular=POPULAR_CITIES.map(name=>({name,country:'',countryCode:'',source:'local'})).filter(x=>norm(x.name).startsWith(nq));const global=worldCities.filter(x=>norm(x.name).startsWith(nq));const seen=new Set(),base=[];for(const x of [...popular,...global]){const k=norm(x.name)+'|'+norm(x.country);if(!seen.has(k)){seen.add(k);base.push(x)}if(base.length>=18)break}cityResults=base;renderCityResults();if(q.length>=2){cityTimer=setTimeout(()=>remoteCitySearch(q),170)}}
+async function remoteCitySearch(q){try{const u='https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(q)+'&count=20&language=it&format=json';const r=await fetch(u);const j=await r.json();const remote=(j.results||[]).filter(x=>['PPLC','PPLA','PPLA2','PPLA3','PPL','PPLX'].includes(x.feature_code)||x.population).map(x=>({name:x.name,country:x.country||'',countryCode:x.country_code||'',admin:x.admin1||'',timezone:x.timezone||'',lat:x.latitude,lon:x.longitude,source:'openmeteo'}));const seen=new Set(),mix=[];for(const x of [...remote,...cityResults]){const k=norm(x.name)+'|'+norm(x.country);if(!seen.has(k)){seen.add(k);mix.push(x)}}cityResults=mix.slice(0,20);renderCityResults()}catch(e){}}
+function renderCityResults(){const box=$('citySuggestions');if(!cityResults.length){box.innerHTML='<div class="suggestion muted">Continua a scrivere per cercare la città.</div>';box.classList.remove('hide');return}box.innerHTML=cityResults.map((x,i)=>`<button type="button" class="suggestion" onclick="chooseCity(${i})"><b>${escapeHtml(x.name)}</b><small>${escapeHtml([x.admin,x.country].filter(Boolean).join(' · '))}</small></button>`).join('');box.classList.remove('hide')}
+function chooseCity(i){const x=cityResults[i];selectedDestination=x;$('destination').value=x.name;$('citySuggestions').classList.add('hide')}
+function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+document.addEventListener('click',e=>{if(!e.target.closest('.field'))document.querySelectorAll('.autocomplete').forEach(x=>x.classList.add('hide'))});
+function safeTrips(){try{const a=JSON.parse(localStorage.getItem(STORE)||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
+function go(id){document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));$(id).classList.add('on');$('actions').classList.toggle('hide',id!=='create');window.scrollTo(0,0)}
+function setActive(t){document.querySelectorAll('#bottomNav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t))}
+function resetCreate(){step=0;transport='Volo';selectedCover=0;selectedFrom=null;selectedTo=null;selectedReturnFrom=null;selectedReturnTo=null;returnFromCustom=false;returnToCustom=false;selectedDestination=null;$('destination').value='';$('startDate').value='';$('endDate').value='';$('fromAirport').value='';$('toAirport').value='';$('flightDepartDate').value='';$('departTime').value='';$('flightArrivalDate').value='';$('arrivalTime').value='';$('flightNo').value='';$('bookingCode').value='';$('returnFromAirport').value='';$('returnToAirport').value='';$('returnFlightDepartDate').value='';$('returnDepartTime').value='';$('returnFlightArrivalDate').value='';$('returnArrivalTime').value='';$('returnFlightNo').value='';$('returnBookingCode').value='';$('returnFlightDuration').textContent='—';$('returnTimezoneDiff').textContent='—';$('returnFlightHint').textContent='';$('adults').value='2';$('teens').value='0';$('children').value='0';$('infants').value='0';calendarTarget='start';calendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);document.querySelectorAll('#transportChoices .choice').forEach(x=>x.classList.toggle('on',x.dataset.v==='Volo'));$('flightFields').classList.remove('hide');buildTravelerNames();renderCalendar();renderCovers()}
+function startCreate(){resetCreate();renderStep();go('create');setActive('home')}
+function renderStep(){document.querySelectorAll('.step').forEach((e,i)=>e.classList.toggle('on',i===step));$('bar').style.width=((step+1)/6*100)+'%';$('stepLabel').textContent=`Passaggio ${step+1} di 6`;$('nextBtn').textContent=step===5?'Crea il viaggio':'Continua';if(step===1)renderCalendar();if(step===3)prefillFlightDates();if(step===5)renderCovers()}
+function nextStep(){if(step===0&&!$('destination').value.trim())return alert('Scegli una destinazione.');if(step===1&&(!$('startDate').value||!$('endDate').value))return alert('Scegli partenza e ritorno.');if(step===3&&transport==='Volo'&&(!selectedFrom||!selectedTo))return alert('Seleziona gli aeroporti dalla lista.');if(step<5){step++;renderStep();window.scrollTo(0,0)}else createTrip()}
+function prevStep(){if(step>0){step--;renderStep();window.scrollTo(0,0)}}
+
+function isoLocal(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function parseISO(s){if(!s)return null;const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
+function dateShort(s){if(!s)return'Scegli data';return new Intl.DateTimeFormat('it-IT',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).format(parseISO(s))}
+function setCalendarTarget(t){calendarTarget=t;if(t==='end'&&$('startDate').value){const d=parseISO($('startDate').value);calendarCursor=new Date(d.getFullYear(),d.getMonth(),1)}renderCalendar()}
+function monthFloor(d){return new Date(d.getFullYear(),d.getMonth(),1)}
+function minDateForCalendar(){const today=new Date();today.setHours(0,0,0,0);if(calendarTarget==='end'&&$('startDate').value)return parseISO($('startDate').value);return today}
+function moveCalendar(delta){const candidate=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+delta,1);if(candidate<monthFloor(minDateForCalendar()))return;calendarCursor=candidate;renderCalendar()}
+function renderCalendar(){
+ $('startDateText').textContent=dateShort($('startDate').value);$('endDateText').textContent=dateShort($('endDate').value);$('startPick').classList.toggle('on',calendarTarget==='start');$('endPick').classList.toggle('on',calendarTarget==='end');
+ const min=minDateForCalendar(),minMonth=monthFloor(min);$('calPrev').disabled=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1)<minMonth;$('calTitle').textContent=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(calendarCursor);
+ const y=calendarCursor.getFullYear(),m=calendarCursor.getMonth(),first=new Date(y,m,1),last=new Date(y,m+1,0),offset=(first.getDay()+6)%7;let html='';for(let i=0;i<offset;i++)html+='<span></span>';
+ const start=$('startDate').value,end=$('endDate').value,today=isoLocal(new Date());for(let day=1;day<=last.getDate();day++){const d=new Date(y,m,day),iso=isoLocal(d),disabled=d<min;let cls='calDay';if(disabled)cls+=' disabled';if(iso===today)cls+=' today';if(iso===start||iso===end)cls+=' selected';else if(start&&end&&iso>start&&iso<end)cls+=' inrange';html+=`<button type="button" class="${cls}" ${disabled?'disabled':''} onclick="selectCalendarDate('${iso}')">${day}</button>`}
+ $('calDays').innerHTML=html;$('calHint').textContent=calendarTarget==='start'?'Seleziona la partenza.':'Ora scegli il ritorno: resti nello stesso mese e puoi andare solo avanti.'
+}
+function selectCalendarDate(iso){if(calendarTarget==='start'){$('startDate').value=iso;$('endDate').value='';calendarTarget='end';const d=parseISO(iso);calendarCursor=new Date(d.getFullYear(),d.getMonth(),1);prefillFlightDates(true)}else{$('endDate').value=iso;prefillReturnFlightDate(true)}renderCalendar()}
+function prefillFlightDates(force=false){if($('startDate').value&&(force||!$('flightDepartDate').value))$('flightDepartDate').value=$('startDate').value;if($('endDate').value&&(force||!$('returnFlightDepartDate').value))$('returnFlightDepartDate').value=$('endDate').value;recalcFlight();recalcReturnFlight()}
+function prefillReturnFlightDate(force=false){if($('endDate').value&&(force||!$('returnFlightDepartDate').value))$('returnFlightDepartDate').value=$('endDate').value;recalcReturnFlight()}
+
+function buildTravelerNames(){const box=$('travelerNames');const old=[...box.querySelectorAll('input')].map(x=>x.value);const groups=[['Adulto',+$('adults').value],['Ragazzo',+$('teens').value],['Bambino',+$('children').value],['Neonato',+$('infants').value]];let html='',k=0;groups.forEach(([label,n])=>{for(let i=1;i<=n;i++){html+=`<div class="field"><label>NOME ${label.toUpperCase()} ${i}</label><input class="travelerName" data-type="${label}" value="${escapeHtml(old[k]||'')}" placeholder="${label} ${i}"></div>`;k++}});box.innerHTML=html;updateWhose()}
+function travelerData(){return [...document.querySelectorAll('.travelerName')].map((x,i)=>({name:x.value.trim()||`Viaggiatore ${i+1}`,type:x.dataset.type||'Viaggiatore'}))}
+function updateWhose(){const show=$('occasion').value==='Compleanno';$('whoseWrap').classList.toggle('hide',!show);$('whose').innerHTML=travelerData().map(x=>`<option>${escapeHtml(x.name)}</option>`).join('')}
+function pickPref(key,value,el){$(key).value=value;document.querySelectorAll(`.prefGrid[data-key="${key}"] .prefChoice`).forEach(x=>x.classList.remove('on'));el.classList.add('on');if(key==='occasion')updateWhose()}
+function pickTransport(el){transport=el.dataset.v;document.querySelectorAll('#transportChoices .choice').forEach(x=>x.classList.remove('on'));el.classList.add('on');$('flightFields').classList.toggle('hide',transport!=='Volo')}
+function airportUi(which){const map={from:['fromAirport','fromSuggestions'],to:['toAirport','toSuggestions'],returnFrom:['returnFromAirport','returnFromSuggestions'],returnTo:['returnToAirport','returnToSuggestions']};return map[which]}
+function clearAirportSelection(which){if(which==='from')selectedFrom=null;else if(which==='to')selectedTo=null;else if(which==='returnFrom'){selectedReturnFrom=null;returnFromCustom=true}else if(which==='returnTo'){selectedReturnTo=null;returnToCustom=true}}
+function airportSearch(which){const ids=airportUi(which);if(!ids)return;const input=$(ids[0]),box=$(ids[1]),q=norm(input.value.trim());clearAirportSelection(which);if(q.length<1){box.classList.add('hide');if(which.startsWith('return'))recalcReturnFlight();else recalcFlight();return}const res=AIRPORTS.filter(a=>norm(`${a.city} ${a.name} ${a.iata} ${a.country}`).includes(q)).slice(0,14);box.innerHTML=res.length?res.map(a=>`<button type="button" class="suggestion" onclick="chooseAirport('${which}','${a.iata}')"><b>${a.city} · ${a.iata}</b><small>${a.name} — ${a.country}</small></button>`).join(''):'<div class="suggestion muted">Continua a scrivere o usa il codice IATA.</div>';box.classList.remove('hide')}
+function setAirportInput(which,a){const ids=airportUi(which);if(!ids||!a)return;$(ids[0]).value=`${a.city} — ${a.name} (${a.iata})`;$(ids[1]).classList.add('hide')}
+function syncReturnAirports(){if(!returnFromCustom&&selectedTo){selectedReturnFrom=selectedTo;setAirportInput('returnFrom',selectedReturnFrom)}if(!returnToCustom&&selectedFrom){selectedReturnTo=selectedFrom;setAirportInput('returnTo',selectedReturnTo)}recalcReturnFlight()}
+function chooseAirport(which,iata){const a=AIRPORTS.find(x=>x.iata===iata);if(!a)return;setAirportInput(which,a);if(which==='from'){selectedFrom=a;syncReturnAirports();recalcFlight()}else if(which==='to'){selectedTo=a;syncReturnAirports();recalcFlight()}else if(which==='returnFrom'){selectedReturnFrom=a;returnFromCustom=true;recalcReturnFlight()}else if(which==='returnTo'){selectedReturnTo=a;returnToCustom=true;recalcReturnFlight()}}
+function tzOffsetMinutes(instant,tz){const f=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});const p=Object.fromEntries(f.formatToParts(instant).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));return(Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second)-instant.getTime())/60000}
+function localInZoneToUTC(dateStr,timeStr,tz){if(!dateStr||!timeStr||!tz)return null;const[y,m,d]=dateStr.split('-').map(Number),[hh,mm]=timeStr.split(':').map(Number);let guess=new Date(Date.UTC(y,m-1,d,hh,mm)),off=tzOffsetMinutes(guess,tz),utc=new Date(guess.getTime()-off*60000),off2=tzOffsetMinutes(utc,tz);if(off2!==off)utc=new Date(guess.getTime()-off2*60000);return utc}
+function haversine(a,b){const R=6371,r=x=>x*Math.PI/180,dlat=r(b.lat-a.lat),dlon=r(b.lon-a.lon),q=Math.sin(dlat/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dlon/2)**2;return 2*R*Math.asin(Math.sqrt(q))}
+function estimatedBlockMinutes(a,b){const km=haversine(a,b);let speed=km<500?620:km<2200?750:840,over=km<500?45:km<2200?50:75;return Math.max(55,Math.round((km/speed*60+over)/5)*5)}
+function zoneParts(d,tz){const f=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});const p=Object.fromEntries(f.formatToParts(d).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));return{date:`${p.year}-${p.month}-${p.day}`,time:`${p.hour}:${p.minute}`}}
+function formatDurationMins(mins){const h=Math.floor(mins/60),m=mins%60;return `${h}h ${String(m).padStart(2,'0')}m`}
+function formatTzDiff(mins){if(mins===0)return'0h';const sign=mins>0?'+':'−',a=Math.abs(mins),h=Math.floor(a/60),m=a%60;return sign+h+'h'+(m?` ${m}m`:'')}
+function recalcFlight(){$('flightDuration').textContent='—';$('timezoneDiff').textContent='—';$('flightHint').textContent='';$('flightArrivalDate').value='';$('arrivalTime').value='';if(!selectedFrom||!selectedTo||!$('flightDepartDate').value||!$('departTime').value){if(selectedFrom&&selectedTo)$('flightHint').textContent='Inserisci data e ora di partenza: VYVA calcolerà subito l’arrivo locale.';return}const dep=localInZoneToUTC($('flightDepartDate').value,$('departTime').value,selectedFrom.tz);if(!dep)return;const mins=estimatedBlockMinutes(selectedFrom,selectedTo),arr=new Date(dep.getTime()+mins*60000),parts=zoneParts(arr,selectedTo.tz),diff=tzOffsetMinutes(dep,selectedTo.tz)-tzOffsetMinutes(dep,selectedFrom.tz);$('flightArrivalDate').value=parts.date;$('arrivalTime').value=parts.time;$('flightDuration').textContent=formatDurationMins(mins);$('timezoneDiff').textContent=formatTzDiff(diff);$('flightHint').textContent=`Arrivo automatico in ora locale di ${selectedTo.city}.`}
+function recalcReturnFlight(){$('returnFlightDuration').textContent='—';$('returnTimezoneDiff').textContent='—';$('returnFlightHint').textContent='';$('returnFlightArrivalDate').value='';$('returnArrivalTime').value='';if(!selectedReturnFrom||!selectedReturnTo||!$('returnFlightDepartDate').value||!$('returnDepartTime').value){if(selectedReturnFrom&&selectedReturnTo)$('returnFlightHint').textContent='Inserisci l’orario di partenza del ritorno: VYVA calcolerà subito l’arrivo locale.';return}const dep=localInZoneToUTC($('returnFlightDepartDate').value,$('returnDepartTime').value,selectedReturnFrom.tz);if(!dep)return;const mins=estimatedBlockMinutes(selectedReturnFrom,selectedReturnTo),arr=new Date(dep.getTime()+mins*60000),parts=zoneParts(arr,selectedReturnTo.tz),diff=tzOffsetMinutes(dep,selectedReturnTo.tz)-tzOffsetMinutes(dep,selectedReturnFrom.tz);$('returnFlightArrivalDate').value=parts.date;$('returnArrivalTime').value=parts.time;$('returnFlightDuration').textContent=formatDurationMins(mins);$('returnTimezoneDiff').textContent=formatTzDiff(diff);$('returnFlightHint').textContent=`Arrivo automatico in ora locale di ${selectedReturnTo.city}.`}
+
+function renderCovers(){$('covers').innerHTML=COVERS.map((c,i)=>`<button type="button" class="cover ${i===selectedCover?'on':''}" style="background-image:url('${c[1]}')" onclick="selectedCover=${i};renderCovers()"><span>${escapeHtml(c[0])}</span></button>`).join('')}
+function fmtDate(s){if(!s)return'';return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short',year:'numeric'}).format(parseISO(s)).replace('.','')}
+function fmtRange(a,b){if(!a||!b)return'';const da=parseISO(a),db=parseISO(b),sameYear=da.getFullYear()===db.getFullYear();const fa=new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short',year:sameYear?undefined:'numeric'}).format(da).replace('.','');const fb=new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short',year:'numeric'}).format(db).replace('.','');return `${fa} – ${fb}`}
+function createTrip(){const travelers=travelerData(),trip={id:Date.now(),destination:$('destination').value.trim(),destinationData:selectedDestination,start:$('startDate').value,end:$('endDate').value,travelers,adults:+$('adults').value,teens:+$('teens').value,children:+$('children').value,infants:+$('infants').value,transport,from:selectedFrom,to:selectedTo,fromText:$('fromAirport').value.trim(),toText:$('toAirport').value.trim(),flightDepartDate:$('flightDepartDate').value,departTime:$('departTime').value,flightArrivalDate:$('flightArrivalDate').value,arrivalTime:$('arrivalTime').value,flightNo:$('flightNo').value.trim(),bookingCode:$('bookingCode').value.trim(),duration:$('flightDuration').textContent,tzDiff:$('timezoneDiff').textContent,returnFrom:selectedReturnFrom,returnTo:selectedReturnTo,returnFromText:$('returnFromAirport').value.trim(),returnToText:$('returnToAirport').value.trim(),returnFlightDepartDate:$('returnFlightDepartDate').value,returnDepartTime:$('returnDepartTime').value,returnFlightArrivalDate:$('returnFlightArrivalDate').value,returnArrivalTime:$('returnArrivalTime').value,returnFlightNo:$('returnFlightNo').value.trim(),returnBookingCode:$('returnBookingCode').value.trim(),returnDuration:$('returnFlightDuration').textContent,returnTzDiff:$('returnTimezoneDiff').textContent,style:$('style').value,pace:$('pace').value,budget:$('budget').value,occasion:$('occasion').value,whose:$('whose').value||'',cover:COVERS[selectedCover][1]};const a=safeTrips();a.unshift(trip);localStorage.setItem(STORE,JSON.stringify(a));localStorage.setItem(CURRENT,String(trip.id));renderHomeTrips();showTrip(trip);setActive('Viaggi')}
+function flag(cc){if(!cc||cc.length!==2)return'✦';return String.fromCodePoint(...cc.toUpperCase().split('').map(c=>127397+c.charCodeAt()))}
+function showTrip(t){if(t?.id)localStorage.setItem(CURRENT,String(t.id));$('tripbg').style.backgroundImage=`url('${t.cover||COVERS[0][1]}')`;$('tdest').textContent=t.destination||'Il tuo viaggio';$('tdates').textContent=fmtRange(t.start,t.end);const start=parseISO(t.start),end=parseISO(t.end),tripDays=Math.max(1,Math.round((end-start)/86400000)+1),now=new Date(),until=Math.ceil((start-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000);$('tcount').textContent=until>0?`Inizia tra ${until} giorni · viaggio di ${tripDays} giorni`:until===0?`Si parte oggi · viaggio di ${tripDays} giorni`:`Viaggio di ${tripDays} giorni`;$('ttransport').textContent=t.transport==='Volo'?'Voli':(t.transport||'Volo');$('routeCard').classList.toggle('hide',t.transport!=='Volo');$('fcode').textContent=t.from?.iata||'—';$('tcode').textContent=t.to?.iata||'—';$('fromCity').textContent=t.from?`${t.from.city} ${t.from.name}`:'Partenza';$('toCity').textContent=t.to?`${t.to.city} ${t.to.name}`:'Arrivo';$('departOnly').textContent=t.departTime||'';$('arrivalOnly').textContent=t.arrivalTime||'';$('flightDateCenter').textContent=t.flightDepartDate?new Intl.DateTimeFormat('it-IT',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}).format(parseISO(t.flightDepartDate)):'';const destCC=t.to?.cc||t.destinationData?.countryCode||'',originCC=t.from?.cc||'IT';$('tripFlags').textContent=`${flag(destCC)} ${flag(originCC)}`;go('trip');updateWeatherForTrip(t)}
+function travelerSummary(t){
+  const people=Array.isArray(t.travelers)?t.travelers:[];
+  const names=people
+    .map(x=>typeof x==='string'?x:(x?.name||''))
+    .map(x=>String(x).trim())
+    .filter(x=>x && !/^Viaggiatore\s+\d+$/i.test(x));
+  if(names.length) return names.join(' · ');
+  const bits=[];
+  if(t.adults)bits.push(`${t.adults} adult${t.adults===1?'o':'i'}`);
+  if(t.teens)bits.push(`${t.teens} ragazz${t.teens===1?'o':'i'}`);
+  if(t.children)bits.push(`${t.children} bambin${t.children===1?'o':'i'}`);
+  if(t.infants)bits.push(`${t.infants} neonat${t.infants===1?'o':'i'}`);
+  return bits.join(' · ')||'Viaggio VYVA';
+}
+function tripCardHtml(t,showDates=true){
+  const subtitle=(showDates&&t.start&&t.end?fmtRange(t.start,t.end)+' · ':'')+travelerSummary(t);
+  return `<div class="tripminiWrap">
+    <button class="tripmini" style="background-image:url('${t.cover||COVERS[0][1]}')" onclick="openTrip(${t.id})">
+      <span class="txt"><b>${escapeHtml(t.destination||'Viaggio')}</b><small>${escapeHtml(subtitle)}</small></span>
+    </button>
+    <button class="tripMenuBtn" aria-label="Opzioni viaggio" onclick="toggleTripMenu(${t.id},event)">•••</button>
+    <div id="tripMenu-${t.id}" class="tripMenu hide" onclick="event.stopPropagation()">
+      <button onclick="openTripFromMenu(${t.id},event)">Apri viaggio</button>
+      <button class="danger" onclick="deleteTrip(${t.id},event)">Elimina viaggio</button>
+    </div>
+  </div>`;
+}
+
+function closeTripMenus(exceptId=null){
+  document.querySelectorAll('.tripMenu').forEach(m=>{
+    if(exceptId===null || m.id!==`tripMenu-${exceptId}`)m.classList.add('hide');
+  });
+}
+function toggleTripMenu(id,event){
+  if(event){event.preventDefault();event.stopPropagation()}
+  const menu=$(`tripMenu-${id}`);
+  if(!menu)return;
+  const opening=menu.classList.contains('hide');
+  closeTripMenus();
+  if(opening)menu.classList.remove('hide');
+}
+function openTripFromMenu(id,event){
+  if(event){event.preventDefault();event.stopPropagation()}
+  closeTripMenus();
+  openTrip(id);
+}
+document.addEventListener('click',()=>closeTripMenus());
+
+function renderHomeTrips(){const a=safeTrips();$('homeTrips').innerHTML=a.length?a.map(t=>tripCardHtml(t,true)).join(''):'<div class="card muted">Il tuo primo viaggio VYVA inizierà qui.</div>'}
+function renderTripsPanel(){const a=safeTrips();$('pbody').innerHTML=a.length?a.map(t=>tripCardHtml(t,false)).join(''):'<div class="card">Non hai ancora creato viaggi.</div>'}
+function deleteTrip(id,event){if(event){event.preventDefault();event.stopPropagation()}const trips=safeTrips(),trip=trips.find(x=>x.id===id);if(!trip)return;if(!confirm(`Vuoi eliminare il viaggio ${trip.destination?'a '+trip.destination:''}?`))return;const next=trips.filter(x=>x.id!==id);localStorage.setItem(STORE,JSON.stringify(next));if(localStorage.getItem(CURRENT)===String(id))localStorage.removeItem(CURRENT);renderHomeTrips();if($('panel').classList.contains('on')&&$('ptitle').textContent==='Viaggi')renderTripsPanel()}
+function openTrip(id){const t=safeTrips().find(x=>x.id===id);if(t){showTrip(t);setActive('Viaggi')}}
+function navTo(t){setActive(t);if(t==='home'){renderHomeTrips();go('home');return}if(t==='Wallet'){$('ptitle').textContent='Wallet';$('ptext').textContent='Voli, spostamenti, biglietti e documenti del viaggio.';renderWalletPanel();go('panel');return}if(t==='Move'){openMovePanel();return}const copy={Viaggi:'Tutti i viaggi che hai creato con VYVA.',Moments:'Quale momento vorrai ricordare?',Profilo:'Persone e preferenze che rendono ogni viaggio tuo.'};$('ptitle').textContent=t;$('ptext').textContent=copy[t]||'';if(t==='Viaggi')renderTripsPanel();else $('pbody').innerHTML='<div class="card">Questa sezione è pronta nella struttura VYVA e la svilupperemo dopo il flusso principale.</div>';go('panel')}
+
+loadWorldCities();buildTravelerNames();renderCalendar();renderCovers();renderHomeTrips();
+</script>
+
+<script id="vyva-move-weather-js">
+const MOVE_STORE='vyvaMoveWalletV1';
+let moveMode='transit';
+let weatherCache={};
+
+function currentTrip(){const id=localStorage.getItem(CURRENT),trips=safeTrips();return trips.find(t=>String(t.id)===String(id))||trips[0]||null}
+function safeMoveItems(){try{return JSON.parse(localStorage.getItem(MOVE_STORE)||'[]')}catch(e){return[]}}
+function weatherEmoji(code){if(code===0)return'☀️';if([1,2].includes(code))return'🌤️';if(code===3)return'☁️';if([45,48].includes(code))return'🌫️';if([51,53,55,56,57].includes(code))return'🌦️';if([61,63,65,66,67,80,81,82].includes(code))return'🌧️';if([71,73,75,77,85,86].includes(code))return'🌨️';if([95,96,99].includes(code))return'⛈️';return'🌤️'}
+function weatherLabel(code){if(code===0)return'Sereno';if([1,2].includes(code))return'Poco nuvoloso';if(code===3)return'Nuvoloso';if([45,48].includes(code))return'Nebbia';if([51,53,55,56,57].includes(code))return'Pioviggine';if([61,63,65,66,67,80,81,82].includes(code))return'Pioggia';if([71,73,75,77,85,86].includes(code))return'Neve';if([95,96,99].includes(code))return'Temporali';return'Meteo variabile'}
+function tripCoords(t){if(t?.destinationData?.lat!=null&&t?.destinationData?.lon!=null)return{lat:t.destinationData.lat,lon:t.destinationData.lon};if(t?.to?.lat!=null&&t?.to?.lon!=null)return{lat:t.to.lat,lon:t.to.lon};return null}
+async function getTripWeather(t,force=false){if(!t)return null;const key=String(t.id||t.destination||'trip');if(!force&&weatherCache[key])return weatherCache[key];const c=tripCoords(t);if(!c)return null;const url=`https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(c.lat)}&longitude=${encodeURIComponent(c.lon)}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=5`;const r=await fetch(url);if(!r.ok)throw new Error('weather');const data=await r.json();weatherCache[key]=data;return data}
+async function updateWeatherForTrip(t,force=false){if(!$('weatherCard'))return;$('weatherTitle').textContent=`Meteo ora a ${t?.destination||'destinazione'}`;$('weatherText').textContent='Aggiornamento meteo…';$('weatherTemp').textContent='—';try{const d=await getTripWeather(t,force);if(!d||!d.current){$('weatherIcon').textContent='🌍';$('weatherText').textContent='Meteo disponibile quando VYVA riconosce la posizione della destinazione.';return}const c=d.current,code=Number(c.weather_code);$('weatherIcon').textContent=weatherEmoji(code);$('weatherTemp').textContent=`${Math.round(c.temperature_2m)}°`;let note=`${weatherLabel(code)} · percepiti ${Math.round(c.apparent_temperature)}°`;const start=t?.start?parseISO(t.start):null;if(start&&((start-new Date())/86400000)>16)note+=' · il meteo del viaggio sarà disponibile più vicino alla partenza';$('weatherText').textContent=note}catch(e){$('weatherIcon').textContent='🌍';$('weatherText').textContent='Meteo temporaneamente non disponibile.'}}
+async function openWeatherPanel(){const t=currentTrip();setActive('Move');$('ptitle').textContent='Meteo';$('ptext').textContent=t?`Meteo live a ${t.destination}. VYVA userà queste informazioni per adattare il viaggio.`:'Meteo del viaggio.';$('pbody').innerHTML='<div class="card">Caricamento previsioni…</div>';go('panel');if(!t)return;try{const d=await getTripWeather(t,true);if(!d)return;const days=(d.daily?.time||[]).map((date,i)=>({date,code:d.daily.weather_code[i],max:d.daily.temperature_2m_max[i],min:d.daily.temperature_2m_min[i]}));$('pbody').innerHTML=`<div class="moveHero"><h2>${weatherEmoji(Number(d.current.weather_code))} ${Math.round(d.current.temperature_2m)}°</h2><p>${weatherLabel(Number(d.current.weather_code))} · percepiti ${Math.round(d.current.apparent_temperature)}° · vento ${Math.round(d.current.wind_speed_10m)} km/h</p></div><div class="weatherDetail">${days.map(x=>`<div class="weatherDay"><div class="wi">${weatherEmoji(Number(x.code))}</div><b>${new Intl.DateTimeFormat('it-IT',{weekday:'short',day:'numeric',month:'short'}).format(parseISO(x.date))}</b><small>${Math.round(x.max)}° / ${Math.round(x.min)}° · ${weatherLabel(Number(x.code))}</small></div>`).join('')}</div><div class="card"><b>Meteo intelligente VYVA</b><p class="muted">Quando il viaggio sarà vicino, useremo il meteo per suggerire cambi di orario, attività al coperto e mezzi più comodi in caso di pioggia o caldo forte.</p><button class="sectionAction" onclick="openMovePanel()">Apri Spostamenti</button></div>`}catch(e){$('pbody').innerHTML='<div class="card">Meteo temporaneamente non disponibile. Riprova tra poco.</div>'}}
+
+function enc(s){return encodeURIComponent(s||'')}
+let moveSelectedPlaces={from:null,to:null};
+let moveSearchTimers={from:null,to:null};
+let moveSearchSeq={from:0,to:0};
+
+function placeQueryValue(which){
+  const el=$(which==='from'?'moveFrom':'moveTo');
+  return el?.value.trim()||'';
+}
+function googleDirectionsUrl(mode){
+  const fromText=placeQueryValue('from'),toText=placeQueryValue('to');
+  const from=moveSelectedPlaces.from;
+  const to=moveSelectedPlaces.to;
+  let u='https://www.google.com/maps/dir/?api=1';
+  if(from)u+='&origin='+enc(`${from.lat},${from.lon}`);
+  else if(fromText)u+='&origin='+enc(fromText);
+  if(to)u+='&destination='+enc(`${to.lat},${to.lon}`);
+  else if(toText)u+='&destination='+enc(toText);
+  if(mode)u+='&travelmode='+enc(mode);
+  return u
+}
+function cityProviders(city,country){
+ const c=norm(city),co=norm(country),transit=(name,url,desc='Biglietti e informazioni ufficiali')=>({type:'transit',name,url,desc,badge:'Ufficiale'}),train=(name,url,desc='Treni e collegamenti')=>({type:'train',name,url,desc,badge:'Biglietti'}),ride=(name,url,desc='Taxi e ride-hailing')=>({type:'ride',name,url,desc,badge:'Prenota'});let p=[];
+ if(c.includes('londra'))p=[transit('Transport for London','https://tfl.gov.uk/travel-information/visiting-london/getting-around-london/best-ways-for-visitors-to-pay','Come pagare: contactless, Oyster e Travelcard'),train('National Rail','https://www.nationalrail.co.uk/','Treni nel Regno Unito'),ride('Uber','https://m.uber.com/looking'),ride('Bolt','https://bolt.eu/en/cities/london/')];
+ else if(c.includes('parigi'))p=[transit('Île-de-France Mobilités','https://www.iledefrance-mobilites.fr/en','Metro, RER, bus e tram'),train('SNCF Connect','https://www.sncf-connect.com/en-en/'),ride('Uber','https://m.uber.com/looking')];
+ else if(c.includes('milano'))p=[transit('ATM Milano','https://www.atm.it/en/Pages/default.aspx','Metro, tram e bus'),train('Trenitalia','https://www.trenitalia.com/en.html'),train('Italo','https://www.italotreno.com/en'),ride('Uber','https://m.uber.com/looking')];
+ else if(c.includes('roma'))p=[transit('ATAC Roma','https://www.atac.roma.it/en','Metro, tram e bus'),train('Trenitalia','https://www.trenitalia.com/en.html'),train('Italo','https://www.italotreno.com/en'),ride('Uber','https://m.uber.com/looking')];
+ else if(c.includes('bangkok'))p=[transit('BTS Skytrain','https://www.bts.co.th/eng/','Skytrain e informazioni biglietti'),transit('MRT Bangkok','https://www.bemplc.co.th/','Metro MRT'),ride('Grab','https://www.grab.com/th/en/')];
+ else if(c.includes('tokyo'))p=[transit('Tokyo Metro','https://www.tokyometro.jp/en/','Metro e pass'),train('JR East','https://www.jreast.co.jp/multi/en/'),ride('Uber','https://m.uber.com/looking')];
+ else if(c.includes('amsterdam'))p=[transit('GVB','https://www.gvb.nl/en','Metro, tram, bus e ferry'),train('NS','https://www.ns.nl/en'),ride('Uber','https://m.uber.com/looking')];
+ else if(c.includes('madrid'))p=[transit('Metro de Madrid','https://www.metromadrid.es/en'),train('Renfe','https://www.renfe.com/es/en'),ride('Uber','https://m.uber.com/looking')];
+ else if(c.includes('barcellona'))p=[transit('TMB Barcelona','https://www.tmb.cat/en/home'),train('Renfe','https://www.renfe.com/es/en'),ride('Uber','https://m.uber.com/looking')];
+ else if(c.includes('dubai'))p=[transit('RTA Dubai','https://www.rta.ae/wps/portal/rta/ae/home','Metro, bus, tram e taxi'),ride('Careem','https://www.careem.com/'),ride('Uber','https://m.uber.com/looking')];
+ else if(c.includes('singapore'))p=[transit('SimplyGo','https://www.simplygo.com.sg/','Trasporto pubblico e carte'),ride('Grab','https://www.grab.com/sg/')];
+ else if(co.includes('italia'))p=[train('Trenitalia','https://www.trenitalia.com/en.html'),train('Italo','https://www.italotreno.com/en'),ride('Uber','https://m.uber.com/looking')];
+ if(!p.length)p=[train('Omio','https://www.omio.com/','Treni e bus dove disponibili'),train('Trainline','https://www.thetrainline.com/','Treni e bus'),ride('Uber','https://m.uber.com/looking')];
+ return p
+}
+function providerModeMatch(p,mode){if(mode==='transit')return p.type==='transit'||p.type==='train';if(mode==='train')return p.type==='train';if(mode==='ride')return p.type==='ride';return false}
+function setMoveMode(mode,el){moveMode=mode;document.querySelectorAll('.moveMode').forEach(x=>x.classList.remove('on'));if(el)el.classList.add('on');renderProviders()}
+function renderProviders(){
+ const t=currentTrip();if(!t||!$('providerList'))return;const city=t.destination||t.to?.city||'',country=t.to?.country||t.destinationData?.country||'';
+ if(moveMode==='walk'){$('providerList').innerHTML=`<div class="providerCard"><div class="providerHead"><div><b>Percorso a piedi</b><small>Apri direttamente le indicazioni per raggiungere la tua prossima tappa.</small></div><span class="providerBadge">Percorso</span></div><div class="providerActions"><a target="_blank" rel="noopener" href="${googleDirectionsUrl('walking')}">Apri percorso</a><button onclick="saveMoveItem('walk','Percorso a piedi','')">Salva nel Wallet</button></div></div>`;return}
+ const list=cityProviders(city,country).filter(p=>providerModeMatch(p,moveMode)),mapsMode=moveMode==='ride'?'driving':'transit';
+ let h=`<div class="providerCard"><div class="providerHead"><div><b>Indicazioni per la tappa</b><small>Prima controlla il percorso e il tempo stimato.</small></div><span class="providerBadge">Mappa</span></div><div class="providerActions"><a target="_blank" rel="noopener" href="${googleDirectionsUrl(mapsMode)}">Apri percorso</a><button onclick="saveMoveItem('${moveMode}','Percorso ${escapeHtml(city)}','')">Salva nel Wallet</button></div></div>`;
+ h+=list.map(p=>`<div class="providerCard"><div class="providerHead"><div><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.desc)}</small></div><span class="providerBadge">${escapeHtml(p.badge)}</span></div><div class="providerActions"><a target="_blank" rel="noopener" href="${p.url}">Acquista / Prenota</a><button onclick="saveMoveItem('${p.type}','${escapeHtml(p.name).replace(/'/g,"&#39;")}','${p.url}')">Ho acquistato · Salva</button></div></div>`).join('');$('providerList').innerHTML=h
+}
+
+function placeIcon(props={}){
+  const k=String(props.osm_key||'').toLowerCase();
+  const v=String(props.osm_value||'').toLowerCase();
+  if(k==='tourism'&&v.includes('hotel'))return'🏨';
+  if(k==='tourism')return'📸';
+  if(k==='railway'||v.includes('station'))return'🚉';
+  if(k==='public_transport')return'🚇';
+  if(k==='amenity'&&/(restaurant|cafe|bar)/.test(v))return'🍽️';
+  if(k==='shop')return'🛍️';
+  if(k==='historic'||k==='leisure')return'📍';
+  if(k==='highway')return'📌';
+  return'📍';
+}
+function photonLabel(feature){
+  const p=feature.properties||{};
+  const title=p.name||p.street||p.city||p.locality||'Luogo';
+  const details=[];
+  const street=[p.housenumber,p.street].filter(Boolean).join(' ');
+  if(street && street!==title)details.push(street);
+  if(p.district && p.district!==title)details.push(p.district);
+  if(p.city && p.city!==title)details.push(p.city);
+  if(p.postcode)details.push(p.postcode);
+  if(p.country)details.push(p.country);
+  return {title,subtitle:[...new Set(details)].join(' · ')};
+}
+function clearPlaceSuggestions(which){
+  const box=$(which==='from'?'moveFromSuggestions':'moveToSuggestions');
+  if(box){box.innerHTML='';box.classList.add('hide')}
+}
+function onMovePlaceInput(which){
+  moveSelectedPlaces[which]=null;
+  renderProviders();updateRouteChoices();
+  const value=placeQueryValue(which);
+  clearTimeout(moveSearchTimers[which]);
+  if(value.length<2){clearPlaceSuggestions(which);return}
+  const box=$(which==='from'?'moveFromSuggestions':'moveToSuggestions');
+  if(box){box.classList.remove('hide');box.innerHTML='<div class="placeSearching">Cerco i luoghi…</div>'}
+  moveSearchTimers[which]=setTimeout(()=>searchMovePlaces(which,value),420);
+}
+async function searchMovePlaces(which,value){
+  const seq=++moveSearchSeq[which];
+  const t=currentTrip(),coords=tripCoords(t),city=t?.destination||t?.to?.city||'';
+  let q=value;
+  if(city && !norm(value).includes(norm(city)))q=`${value}, ${city}`;
+  let url=`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=7&lang=it`;
+  if(coords)url+=`&lat=${encodeURIComponent(coords.lat)}&lon=${encodeURIComponent(coords.lon)}&zoom=12&location_bias_scale=0.15`;
+  const box=$(which==='from'?'moveFromSuggestions':'moveToSuggestions');
+  try{
+    const r=await fetch(url,{headers:{'Accept':'application/json'}});
+    if(!r.ok)throw new Error('place-search');
+    const data=await r.json();
+    if(seq!==moveSearchSeq[which]||!box)return;
+    const features=Array.isArray(data.features)?data.features:[];
+    if(!features.length){box.classList.remove('hide');box.innerHTML='<div class="placeEmpty">Nessun luogo trovato. Prova a scrivere qualche lettera in più.</div>';return}
+    box.classList.remove('hide');
+    box.innerHTML=features.map((f,i)=>{
+      const l=photonLabel(f),p=f.properties||{};
+      return `<button class="placeSuggestion" onclick="chooseMovePlace('${which}',${i})">
+        <span class="psi">${placeIcon(p)}</span>
+        <span><b>${escapeHtml(l.title)}</b><small>${escapeHtml(l.subtitle||city)}</small></span>
+      </button>`
+    }).join('');
+    window[`_vyvaPlaceResults_${which}`]=features;
+  }catch(e){
+    if(seq!==moveSearchSeq[which]||!box)return;
+    box.classList.remove('hide');
+    box.innerHTML='<div class="placeEmpty">Ricerca luoghi momentaneamente non disponibile. Puoi comunque scrivere l’indirizzo manualmente.</div>';
+  }
+}
+function chooseMovePlace(which,index){
+  const arr=window[`_vyvaPlaceResults_${which}`]||[],f=arr[index];
+  if(!f)return;
+  const l=photonLabel(f),coords=f.geometry?.coordinates||[];
+  const p=f.properties||{};
+  const full=[l.title,p.street&&p.street!==l.title?p.street:'',p.city&&p.city!==l.title?p.city:'',p.country].filter(Boolean).join(', ');
+  moveSelectedPlaces[which]={label:full||l.title,lon:Number(coords[0]),lat:Number(coords[1]),properties:p};
+  const input=$(which==='from'?'moveFrom':'moveTo');
+  if(input)input.value=full||l.title;
+  clearPlaceSuggestions(which);
+  renderProviders();updateRouteChoices();
+}
+function useCurrentLocation(){
+  if(!navigator.geolocation){alert('La posizione non è disponibile su questo dispositivo.');return}
+  const btn=$('useLocationBtn');if(btn)btn.textContent='…';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    moveSelectedPlaces.from={label:'Posizione attuale',lat:pos.coords.latitude,lon:pos.coords.longitude};
+    if($('moveFrom'))$('moveFrom').value='Posizione attuale';
+    if(btn)btn.textContent='📍';
+    clearPlaceSuggestions('from');
+    renderProviders();updateRouteChoices();
+  },()=>{
+    if(btn)btn.textContent='📍';
+    alert('Non riesco ad accedere alla posizione. Puoi cercare il luogo scrivendolo nella casella.');
+  },{enableHighAccuracy:true,timeout:8000,maximumAge:60000});
+}
+
+
+let mobilityPreference='all';
+
+function tripDayCount(t){
+  if(!t?.start||!t?.end)return 1;
+  const a=parseISO(t.start),b=parseISO(t.end);
+  return Math.max(1,Math.round((b-a)/86400000)+1);
+}
+function londonTrip(t){
+  const city=norm(t?.destination||t?.to?.city||'');
+  return city.includes('londra')||city.includes('london');
+}
+function saveMobilityPreference(label){
+  const t=currentTrip();if(!t)return;
+  const key='vyvaMobilityPrefsV1';
+  let all={};try{all=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){}
+  all[t.id]={label,saved:new Date().toISOString()};
+  localStorage.setItem(key,JSON.stringify(all));
+  alert('Preferenza di mobilità salvata per questo viaggio.');
+}
+
+function toggleMobilityAccordion(){
+  const box=$('mobilityAccordion');
+  if(!box)return;
+  box.classList.toggle('open');
+  const open=box.classList.contains('open');
+  const btn=$('mobilityAccordionButton');
+  if(btn)btn.setAttribute('aria-expanded',open?'true':'false');
+}
+
+
+function londonFamilyMoveSummary(t){
+  const adults=Number(t?.adults||0);
+  const children=Number(t?.children||0);
+  const infants=Number(t?.infants||0);
+  const days=tripDayCount(t);
+
+  const familyBits=[];
+  if(adults)familyBits.push(`${adults} adult${adults===1?'o':'i'}`);
+  if(children)familyBits.push(`${children} bambin${children===1?'a':'i'}`);
+  if(infants)familyBits.push(`${infants} neonat${infants===1?'o':'i'}`);
+
+  let childNote='';
+  if(children||infants){
+    childNote=' I minori sotto gli 11 anni viaggiano gratis su bus, tram, Tube, DLR, Overground ed Elizabeth line se accompagnati da un adulto pagante.';
+  }
+
+  let adultNote='';
+  if(adults>=2){
+    adultNote=' Per gli adulti serve un metodo di pagamento distinto per ciascuno: se avete una sola carta contactless, un adulto può usarla e l’altro può usare una Oyster.';
+  }else if(adults===1){
+    adultNote=' Per l’adulto basta contactless oppure Oyster.';
+  }
+
+  let durationNote='';
+  if(days<=5){
+    durationNote=` Per ${days} ${days===1?'giorno':'giorni'}, VYVA suggerisce di partire dal pay as you go con contactless/Oyster: applica automaticamente il daily cap e poi puoi confrontarlo con eventuali pass.`;
+  }else{
+    durationNote=` Per ${days} giorni, conviene confrontare pay as you go con le opzioni settimanali in base alle zone e ai giorni effettivi di utilizzo.`;
+  }
+
+  return `<div class="personalMoveSummary"><b>Per voi: ${escapeHtml(familyBits.join(' · ')||'viaggiatori VYVA')}.</b>${childNote}${adultNote}${durationNote}</div>`;
+}
+
+
+function toggleArrivalAccordion(){
+  const box=$('arrivalAccordion');
+  if(!box)return;
+  box.classList.toggle('open');
+  const open=box.classList.contains('open');
+  const btn=$('arrivalAccordionButton');
+  if(btn)btn.setAttribute('aria-expanded',open?'true':'false');
+}
+function airportArrivalGuideHtml(t){
+  const iata=(t?.to?.iata||'').toUpperCase();
+  const airportName=t?.to?.name||t?.to?.city||'aeroporto';
+  const time=t?.arrivalTime?` · arrivo previsto ${escapeHtml(t.arrivalTime)}`:'';
+
+  if(iata==='LGW'){
+    return `<div id="arrivalAccordion" class="arrivalAccordion">
+      <button id="arrivalAccordionButton" class="arrivalAccordionHead" type="button" aria-expanded="false" onclick="toggleArrivalAccordion()">
+        <span>
+          <strong>🛬 Appena atterri a Gatwick${time}</strong>
+          <small>Tocca: VYVA ti guida dall’aeroporto fino a Londra, passo passo</small>
+        </span>
+        <span class="arrivalAccordionChevron">⌄</span>
+      </button>
+      <div class="arrivalAccordionBody">
+        <div class="arrivalStep">
+          <span class="arrivalNum">1</span>
+          <span><b>Ritira bagagli e segui “Train Station”</b><small>La stazione ferroviaria di Gatwick è al South Terminal. Se atterri al North Terminal, usa la navetta gratuita tra i terminal.</small></span>
+        </div>
+        <div class="arrivalStep">
+          <span class="arrivalNum">2</span>
+          <span><b>Per voi: 2 adulti, una bambina e un neonato</b><small>Un adulto può usare la vostra carta/contactless. Per il secondo adulto potete acquistare una Oyster standard al Your Service Centre nel South Terminal oppure comprare un biglietto ferroviario alla stazione.</small></span>
+        </div>
+        <div class="arrivalStep">
+          <span class="arrivalNum">3</span>
+          <span><b>Scegli il treno per Londra</b><small>Puoi confrontare Gatwick Express e i normali servizi Southern/Thameslink in base alla zona dell’hotel. Non serve per forza acquistare prima: dove PAYG è valido puoi usare contactless/Oyster; in alternativa ci sono le macchinette in stazione.</small></span>
+        </div>
+        <div class="arrivalStep">
+          <span class="arrivalNum">4</span>
+          <span><b>Biglietti bambini: controlla il treno scelto</b><small>Le regole del trasferimento aeroportuale non sono identiche a quelle della Tube. Il neonato è generalmente gratuito; per la bambina VYVA deve verificare la tariffa bambino del servizio ferroviario scelto prima di confermare.</small></span>
+        </div>
+        <div class="arrivalStep">
+          <span class="arrivalNum">5</span>
+          <span><b>Quando arrivi in città</b><small>Da quel momento puoi usare VYVA Move per hotel → attrazioni, con Tube, bus, tram, treni, taxi o percorso a piedi.</small></span>
+        </div>
+        <div class="arrivalButtons">
+          <a target="_blank" rel="noopener" href="https://www.gatwickairport.com/transport-options/train.html">Treni da Gatwick</a>
+          <a class="secondary" target="_blank" rel="noopener" href="https://www.gatwickexpress.com/tickets/pay-as-you-go/oyster">Oyster da Gatwick</a>
+          <a target="_blank" rel="noopener" href="https://www.gatwickexpress.com/tickets/">Compra treno</a>
+          <a class="secondary" target="_blank" rel="noopener" href="https://tfl.gov.uk/fares/ways-to-pay/pay-as-you-go">Come pagare a Londra</a>
+        </div>
+        <div class="arrivalCaution"><b>VYVA controlla prima di consigliarti l’acquisto.</b> Per aeroporto, treno e bambini possono esserci regole diverse dalla rete urbana di Londra.</div>
+      </div>
+    </div>`;
+  }
+
+  if(iata){
+    return `<div id="arrivalAccordion" class="arrivalAccordion">
+      <button id="arrivalAccordionButton" class="arrivalAccordionHead" type="button" aria-expanded="false" onclick="toggleArrivalAccordion()">
+        <span><strong>🛬 Appena atterri a ${escapeHtml(iata)}${time}</strong><small>Tocca per vedere il percorso dall’aeroporto alla città</small></span>
+        <span class="arrivalAccordionChevron">⌄</span>
+      </button>
+      <div class="arrivalAccordionBody">
+        <div class="arrivalStep"><span class="arrivalNum">1</span><span><b>Arrivo in aeroporto</b><small>VYVA userà aeroporto, orario e destinazione per proporti treno, bus, transfer e taxi.</small></span></div>
+        <div class="arrivalStep"><span class="arrivalNum">2</span><span><b>Confronto dei mezzi</b><small>Mostreremo dove si acquistano i biglietti e quale opzione è più semplice per il tuo gruppo.</small></span></div>
+        <div class="arrivalCaution">Per ora abbiamo completato il flusso dettagliato di Gatwick come primo modello; gli altri aeroporti verranno aggiunti con fonti ufficiali.</div>
+      </div>
+    </div>`;
+  }
+  return '';
+}
+
+function mobilityAdvisorHtml(t){
+  const days=tripDayCount(t);
+  if(londonTrip(t)){
+    const lengthTip=days<=3
+      ? `Per ${days} ${days===1?'giorno':'giorni'}, VYVA ti suggerisce di confrontare pay as you go con una Day Travelcard in base alle zone che userai.`
+      : `Per ${days} giorni, VYVA ti suggerisce di confrontare contactless/Oyster pay as you go con Travelcard e relativi cap, in base ai giorni della settimana e alle zone.`;
+    return `<div id="mobilityAccordion" class="mobilityAccordion">
+      <button id="mobilityAccordionButton" class="mobilityAccordionHead" type="button" aria-expanded="false" onclick="toggleMobilityAccordion()">
+        <span>
+          <strong>🎫 Come conviene muoversi a Londra</strong>
+          <small>Tocca per vedere pass, Oyster, contactless e opzioni disponibili</small>
+        </span>
+        <span class="mobilityAccordionChevron">⌄</span>
+      </button>
+      <div class="mobilityAccordionBody">
+        <div class="mobilityAdvisor">
+          ${londonFamilyMoveSummary(t)}
+          <p>${lengthTip}</p>
+          <div class="mobilityTip"><b>Da sapere:</b> con contactless o Oyster normalmente non devi comprare ogni singolo biglietto prima di salire. Il sistema applica il pay as you go e i cap previsti.</div>
+          <div class="mobilityTagRow">
+            <span class="mobilityTag on">Tutti i mezzi</span>
+            <span class="mobilityTag">Bus + Tram</span>
+            <span class="mobilityTag">Tube + Rail</span>
+            <span class="mobilityTag">Solo treni</span>
+          </div>
+          <div class="ticketPick">
+            <span class="ticketPickIcon">💳</span>
+            <span><b>Contactless / Oyster pay as you go</b><small>Tube, bus, tram, DLR, Overground, Elizabeth line e gran parte dei treni urbani. Utile se vuoi pagare solo ciò che usi.</small>
+              <span class="ticketActions"><a target="_blank" rel="noopener" href="https://tfl.gov.uk/travel-information/visiting-london/getting-around-london/best-ways-for-visitors-to-pay">Info ufficiali</a><button onclick="saveMobilityPreference('Contactless / Oyster')">Salva scelta</button></span>
+            </span>
+          </div>
+          <div class="ticketPick">
+            <span class="ticketPickIcon">🎟️</span>
+            <span><b>Travelcard / pass</b><small>Per viaggi illimitati nelle zone coperte. VYVA ti ricorda di confrontarla con i cap pay as you go prima dell’acquisto.</small>
+              <span class="ticketActions"><a target="_blank" rel="noopener" href="https://tfl.gov.uk/fares/">Tariffe ufficiali</a><button onclick="saveMobilityPreference('Travelcard / pass')">Salva scelta</button></span>
+            </span>
+          </div>
+          <div class="mobilityLinks">
+            <a target="_blank" rel="noopener" href="https://tfl.gov.uk/fares/ways-to-pay/pay-as-you-go">Pay as you go</a>
+            <a target="_blank" rel="noopener" href="https://tfl.gov.uk/plan-a-journey/">Journey Planner TfL</a>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+  return `<div id="mobilityAccordion" class="mobilityAccordion">
+    <button id="mobilityAccordionButton" class="mobilityAccordionHead" type="button" aria-expanded="false" onclick="toggleMobilityAccordion()">
+      <span>
+        <strong>🎫 Come conviene muoversi a ${escapeHtml(t?.destination||'destinazione')}</strong>
+        <small>Tocca per vedere pass, abbonamenti e opzioni disponibili</small>
+      </span>
+      <span class="mobilityAccordionChevron">⌄</span>
+    </button>
+    <div class="mobilityAccordionBody">
+      <div class="mobilityAdvisor">
+        <p>VYVA ti mostrerà qui le formule disponibili nella città: giornalieri, più giorni, trasporto pubblico completo o singole categorie quando esistono.</p>
+        <div class="mobilityTagRow"><span class="mobilityTag on">Tutti i mezzi</span><span class="mobilityTag">Bus</span><span class="mobilityTag">Metro</span><span class="mobilityTag">Treni</span></div>
+        <div class="mobilityTip">Per questa città stiamo usando i collegamenti ufficiali già presenti in VYVA Move. Aggiungeremo progressivamente i pass specifici città per città.</div>
+      </div>
+    </div>
+  </div>`;
+}
+function routeChoiceHtml(){
+  const fromOk=!!placeQueryValue('from'),toOk=!!placeQueryValue('to');
+  if(!fromOk||!toOk)return '';
+  const transit=googleDirectionsUrl('transit'),drive=googleDirectionsUrl('driving'),walk=googleDirectionsUrl('walking');
+  const t=currentTrip();
+  let h=`<div class="routeLiveNotice"><b>Come ci puoi arrivare</b><br>VYVA ha già i due luoghi esatti. Per ora le linee, i cambi e i tempi live vengono aperti nel planner di trasporto; non inventiamo tempi o linee quando non abbiamo ancora collegato l’API live della città.</div>
+  <div class="routeChoices">
+    <div class="routeChoice">
+      <div class="routeChoiceTop"><span class="routeChoiceIcon">🚇</span><span><b>Trasporto pubblico</b><small>Metro, bus, tram e treni. Visualizza fermate, linee, cambi e durata live.</small></span><span>›</span></div>
+      <a class="openRoute" target="_blank" rel="noopener" href="${transit}">Vedi percorso pubblico live</a>
+      ${londonTrip(t)?`<a class="secondaryRoute" target="_blank" rel="noopener" href="https://tfl.gov.uk/plan-a-journey/">Apri anche TfL Journey Planner</a>`:''}
+    </div>
+    <div class="routeChoice">
+      <div class="routeChoiceTop"><span class="routeChoiceIcon">🚕</span><span><b>Taxi / ride-hailing</b><small>Confronta il percorso in auto e poi scegli il servizio disponibile nella città.</small></span><span>›</span></div>
+      <a class="openRoute" target="_blank" rel="noopener" href="${drive}">Vedi percorso in auto</a>
+    </div>
+    <div class="routeChoice">
+      <div class="routeChoiceTop"><span class="routeChoiceIcon">🚶</span><span><b>A piedi</b><small>Controlla distanza, percorso pedonale e durata.</small></span><span>›</span></div>
+      <a class="openRoute" target="_blank" rel="noopener" href="${walk}">Vedi percorso a piedi</a>
+    </div>
+  </div>`;
+  return h;
+}
+function updateRouteChoices(){
+  const el=$('routeChoiceBox');
+  if(el)el.innerHTML=routeChoiceHtml();
+}
+
+function openMovePanel(){
+ const t=currentTrip();setActive('Move');$('ptitle').textContent='Move';$('ptext').textContent=t?`Come muoverti a ${t.destination}, quale mezzo scegliere e come pagarlo.`:'Scegli un viaggio per vedere gli spostamenti.';
+ if(!t){$('pbody').innerHTML='<div class="card">Crea o apri un viaggio per usare VYVA Move.</div>';go('panel');return}
+ moveSelectedPlaces={from:null,to:null};
+ $('pbody').innerHTML=`<div class="moveHero"><h2>VYVA Move</h2><p>Prima ti aiutiamo a capire come conviene muoverti durante il soggiorno. Poi scegli DA e A e confronti i modi per arrivarci.</p></div>
+ ${mobilityAdvisorHtml(t)}
+ ${airportArrivalGuideHtml(t)}
+ <div class="moveRoute">
+   <div class="field placeField">
+     <label>DA</label>
+     <div class="placeInputRow"><input id="moveFrom" autocomplete="off" placeholder="Es. nome hotel, Victoria Station…" oninput="onMovePlaceInput('from');updateRouteChoices()" onfocus="onMovePlaceInput('from')"><button id="useLocationBtn" class="locateBtn" type="button" onclick="useCurrentLocation()" aria-label="Usa posizione attuale">📍</button></div>
+     <div id="moveFromSuggestions" class="placeSuggestions hide"></div>
+   </div>
+   <div class="field placeField">
+     <label>A</label>
+     <input id="moveTo" autocomplete="off" placeholder="Es. British Museum, ristorante, stazione…" oninput="onMovePlaceInput('to');updateRouteChoices()" onfocus="onMovePlaceInput('to')">
+     <div id="moveToSuggestions" class="placeSuggestions hide"></div>
+   </div>
+   <small class="placeCredit">Ricerca luoghi basata su OpenStreetMap</small>
+ </div>
+ <div id="routeChoiceBox"></div>
+ <div class="moveModes">
+   <button class="moveMode on" onclick="setMoveMode('transit',this)"><span class="mi">🚇</span><b>Metro · Bus · Tram</b></button>
+   <button class="moveMode" onclick="setMoveMode('train',this)"><span class="mi">🚆</span><b>Treno</b></button>
+   <button class="moveMode" onclick="setMoveMode('ride',this)"><span class="mi">🚕</span><b>Taxi · Grab · Uber</b></button>
+   <button class="moveMode" onclick="setMoveMode('walk',this)"><span class="mi">🚶</span><b>A piedi</b></button>
+ </div>
+ <div id="providerList" class="providerList"></div>
+ <p class="moveNote">L’obiettivo finale è mostrare direttamente in VYVA linea, colore, fermate, cambi e durata. Per farlo con dati reali e aggiornati dobbiamo collegare l’API di routing della città; questa versione usa già i luoghi esatti e apre il percorso live corretto.</p>`;
+ go('panel');moveMode='transit';renderProviders();updateRouteChoices()
+}
+function moveIcon(type){if(type==='ride')return'🚕';if(type==='train')return'🚆';if(type==='walk')return'🚶';return'🚇'}
+function saveMoveItem(type,provider,url){const t=currentTrip();if(!t)return;const from=$('moveFrom')?.value.trim()||'',to=$('moveTo')?.value.trim()||'',items=safeMoveItems();items.unshift({id:Date.now(),tripId:t.id,trip:t.destination,type,provider,url,from,to,fromPlace:moveSelectedPlaces.from,toPlace:moveSelectedPlaces.to,created:new Date().toISOString()});localStorage.setItem(MOVE_STORE,JSON.stringify(items));alert('Spostamento salvato nel Wallet VYVA.')}
+function deleteMoveItem(id){localStorage.setItem(MOVE_STORE,JSON.stringify(safeMoveItems().filter(x=>x.id!==id)));renderWalletPanel()}
+function renderWalletPanel(){
+ const t=currentTrip(),items=safeMoveItems().filter(x=>!t||String(x.tripId)===String(t.id));let flight='';
+ if(t?.transport==='Volo'&&t.from&&t.to){flight=`<div class="walletSectionTitle">VOLI</div><div class="walletItem"><span class="walletItemIcon">✈️</span><span><b>${escapeHtml(t.from.iata)} → ${escapeHtml(t.to.iata)}</b><small>${escapeHtml(t.flightNo||'Volo di andata')} · ${escapeHtml(t.bookingCode||'codice prenotazione non inserito')}</small></span><span></span></div>`;if(t.returnFrom&&t.returnTo)flight+=`<div class="walletItem"><span class="walletItemIcon">↩️</span><span><b>${escapeHtml(t.returnFrom.iata)} → ${escapeHtml(t.returnTo.iata)}</b><small>${escapeHtml(t.returnFlightNo||'Volo di ritorno')} · ${escapeHtml(t.returnBookingCode||'codice prenotazione non inserito')}</small></span><span></span></div>`}
+ const moveHtml=items.length?items.map(x=>`<div class="walletItem"><span class="walletItemIcon">${moveIcon(x.type)}</span><span><b>${escapeHtml(x.provider||'Spostamento')}</b><small>${escapeHtml([x.from&&`Da ${x.from}`,x.to&&`a ${x.to}`,x.trip].filter(Boolean).join(' · '))}</small></span><button class="walletDelete" onclick="deleteMoveItem(${x.id})">×</button></div>`).join(''):'<div class="card muted">Nessuno spostamento salvato. Apri “Spostamenti” dal viaggio per aggiungerne uno.</div>';
+ $('pbody').innerHTML=`${flight}<div class="walletSectionTitle">MOVE</div>${moveHtml}<div class="walletSectionTitle">PASS & MOBILITÀ</div><div class="card"><b>Le tue scelte di mobilità</b><p class="muted">Le preferenze salvate da VYVA Move restano associate al viaggio. In seguito qui conserveremo anche pass, QR code e ricevute.</p></div><div class="walletSectionTitle">DOCUMENTI & BIGLIETTI</div><div class="card"><b>Prossimo passo VYVA</b><p class="muted">Qui aggiungeremo screenshot, QR code e documenti di viaggio per tenerli insieme agli spostamenti.</p></div>`
+}
+</script>
+
+</body></html>
