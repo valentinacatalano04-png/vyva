@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f3ee">
+<title>VYVA</title>
+<style>
+:root{--ink:#171717;--paper:#f6f3ee;--card:#fff;--line:#dfd8cf;--muted:#777;--nav:86px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif}
+body{min-height:100vh;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom))}
+button,input,select{font:inherit}.screen{display:none;min-height:100vh}.screen.on{display:block}.w{max-width:760px;margin:auto;padding:calc(28px + env(safe-area-inset-top)) 20px 150px}
+.logo{font-size:29px;font-weight:900;letter-spacing:.2em}.muted{color:var(--muted)}h1{font-size:38px;line-height:1.05;margin:28px 0 12px}h2{font-size:25px}
+.hero{background:#171717;color:white;border-radius:30px;padding:25px;margin-top:28px}.btn{border:0;border-radius:18px;padding:17px;width:100%;font-weight:800;background:#171717;color:#fff}.hero .btn{background:#fff;color:#171717}
+.card{background:white;border:1px solid var(--line);border-radius:22px;padding:18px;margin:12px 0}
+.field{margin:17px 0;position:relative}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}.field input,.field select{width:100%;padding:16px;border:1px solid #d9d2ca;border-radius:16px;background:white;outline:none}.field input:focus,.field select:focus{border-color:#171717}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.step{display:none}.step.on{display:block}.progress{height:5px;background:#ddd6ce;border-radius:5px;margin:20px 0}.progress i{display:block;height:100%;background:#171717;border-radius:5px}.choices,.covers{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choice{padding:18px;border:1px solid #ddd5cc;border-radius:18px;background:white;text-align:left}.choice.on{border:2px solid #171717}.cover{height:225px;border:3px solid transparent;border-radius:22px;background-size:cover;background-position:center}.cover.on{border-color:#171717}
+.actions{position:fixed;left:0;right:0;bottom:calc(var(--nav) + env(safe-area-inset-bottom));z-index:50;padding:10px 20px;background:#f6f3eef2;backdrop-filter:blur(14px)}.actions>div{max-width:720px;margin:auto;display:flex;gap:8px}.actions button{flex:1}.secondary{background:#e7e1da;color:#171717}.hide{display:none!important}
+.autocomplete{position:absolute;left:0;right:0;top:100%;z-index:80;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 30px #0002;max-height:260px;overflow:auto;margin-top:5px}.suggestion{display:block;width:100%;border:0;border-bottom:1px solid #eee;background:#fff;padding:13px 14px;text-align:left}.suggestion:last-child{border-bottom:0}.suggestion b{font-size:15px}.suggestion small{display:block;color:#777;margin-top:3px}
+.infoStrip{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.infoBox{background:#efebe6;border-radius:17px;padding:13px}.infoBox small{display:block;color:#777}.infoBox b{font-size:18px}
+.tripbg{min-height:100vh;background-size:cover;background-position:center;position:relative;color:#fff}.tripbg:before{content:"";position:absolute;inset:0;background:linear-gradient(#0003,#0002 35%,#000d)}.tc{position:relative;z-index:1;max-width:760px;margin:auto;padding:calc(35px + env(safe-area-inset-top)) 20px 130px}.center{text-align:center}.dest{margin-top:60px}.dest h1{font-size:46px}.quick,.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:28px}.quick div,.glass{background:#ffffff24;border:1px solid #ffffff44;backdrop-filter:blur(14px);border-radius:19px;padding:14px}.glass{margin-top:12px}.route{display:flex;align-items:center;justify-content:space-between}.route b{font-size:27px}.line{height:1px;background:#fff8;flex:1;margin:0 15px}.tiles{grid-template-columns:1fr 1fr;margin-top:10px}.tiles .glass{min-height:90px;margin:0}
+.tripmini{display:block;width:100%;height:165px;border:0;border-radius:23px;background-size:cover;background-position:center;position:relative;overflow:hidden;color:#fff;text-align:left;margin:10px 0}.tripmini:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent,#000d)}.tripmini .txt{position:absolute;z-index:2;bottom:15px;left:17px;right:17px}.tripmini b{font-size:22px}.tripmini small{display:block;margin-top:4px}
+nav{position:fixed;z-index:100;left:0;right:0;bottom:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);display:grid;grid-template-columns:repeat(6,1fr);background:#fffefbf2;backdrop-filter:blur(20px);border-top:1px solid #ddd}nav button{border:0;background:none;color:#999;font-size:10px}nav button i{display:block;font-style:normal;font-size:21px}nav button.on{color:#111;font-weight:900}
+@media(max-width:390px){h1{font-size:34px}.dest h1{font-size:40px}.w{padding-left:16px;padding-right:16px}.quick{gap:5px}.quick div{font-size:11px}}
+</style>
+
+<style id="vyva-approved-ui">
+:root{--nav:94px;--navy:#071b43}
+body{background:#f3f3f3;color:var(--navy)}
+.tripbg{min-height:100vh;background-size:cover;background-position:center top;position:relative;color:#fff;padding-bottom:calc(120px + env(safe-area-inset-bottom))}
+.tripOverlay{position:absolute;inset:0;background:linear-gradient(rgba(5,16,42,.02) 0%,rgba(5,16,42,.02) 37%,rgba(5,16,42,.14) 53%,rgba(245,245,245,.77) 76%,#f3f3f3 91%)}
+.tripPage{position:relative;z-index:2;max-width:760px;margin:auto;padding:calc(24px + env(safe-area-inset-top)) 24px 40px}
+.tripHeader{display:flex;justify-content:space-between;align-items:flex-start}.tripVyva{font-size:48px;font-weight:300;letter-spacing:.045em;line-height:.95}.tripTagline{font-family:"Snell Roundhand","Segoe Script","Brush Script MT",cursive;font-size:26px;margin:8px 0 0 5px}
+.tripHeaderActions{display:flex;gap:12px}.tripHeaderActions button{display:flex;align-items:center;justify-content:center;width:58px;height:58px;border:0;border-radius:50%;background:rgba(21,25,39,.58);color:#fff;backdrop-filter:blur(12px)}.tripHeaderActions svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tripTitleBlock{text-align:center;margin-top:118px;text-shadow:0 2px 12px #0008}.tripFlags{font-size:39px;line-height:1}.tripTitleBlock h1{font-family:Georgia,"Times New Roman",serif;font-size:50px;font-weight:600;line-height:1;margin:7px 0 9px;color:#fff}.tripCountdown,.tripDateRange{font-size:20px;line-height:1.25}
+.tripQuick{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 9px 21px}.tripQuick button{border:0;background:none;color:#fff;padding:0}.tripQuick button>span{display:flex;width:62px;height:62px;margin:auto;align-items:center;justify-content:center;border-radius:50%;background:rgba(34,36,45,.67);backdrop-filter:blur(10px)}.tripQuick svg{width:31px;height:31px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.tripQuick small{display:block;font-size:16px;line-height:1.15;margin-top:8px;text-shadow:0 1px 6px #0008}
+.flightWhiteCard{display:grid;grid-template-columns:1fr 1.25fr 1fr 18px;gap:8px;align-items:center;background:rgba(255,255,255,.98);color:#071b43;border-radius:25px;padding:19px 18px;box-shadow:0 8px 28px #00000020}.flightAirport small{display:block;color:#111;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.flightAirport b{display:block;font-size:35px;line-height:1;margin:5px 0}.flightAirport span{font-size:18px}.flightAirport.right{text-align:right}.flightMiddle{text-align:center}.flightRouteLine{display:flex;align-items:center;gap:4px;color:#198ee8}.flightRouteLine i{height:2px;flex:1;background:#62bdf6}.flightRouteLine svg{width:29px;height:29px;fill:#198ee8;stroke:#198ee8;stroke-width:1}.flightMiddle small{display:block;color:#33415e;font-size:14px;margin-top:7px}.chevron{font-size:39px;color:#0b1833}
+.menuCards{display:grid;gap:10px;margin-top:12px}.menuCard{width:100%;display:grid;grid-template-columns:64px 1fr 20px;align-items:center;border:0;border-radius:24px;background:rgba(255,255,255,.98);color:#091738;padding:13px 16px;text-align:left;box-shadow:0 6px 22px #0000000d}.menuIcon{display:flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:17px}.menuIcon svg{width:31px;height:31px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.menuIcon.rose{background:#fde2e6;color:#c82a46}.menuIcon.sky{background:#def0fd;color:#1685ca}.menuIcon.mint{background:#e0f1e2;color:#0a9b5b}.menuIcon.gold{background:#fff0d5;color:#d48b00}.menuCopy b{display:block;font-size:20px}.menuCopy small{display:block;font-size:15px;color:#4d5873;margin-top:3px}.menuChevron{font-size:35px;color:#9097aa}
+.memoryStrip{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:13px;padding:16px 18px;border-radius:27px;background:rgba(224,224,224,.88);color:#102554;font-size:25px}.memoryStrip em{font-family:"Snell Roundhand","Segoe Script","Brush Script MT",cursive;font-size:22px;font-style:normal}.memoryStrip .sun{font-size:30px}
+#bottomNav{position:fixed;z-index:1000;left:0;right:0;bottom:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding:8px 8px env(safe-area-inset-bottom);display:grid;grid-template-columns:repeat(6,1fr);background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-radius:30px 30px 0 0;box-shadow:0 -8px 28px #00000012;border:0}
+#bottomNav button{border:0;background:none;color:#44506d;padding:5px 0 3px;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}#bottomNav button.on{color:#071b43;font-weight:800}.navIcon{width:28px;height:28px;display:block}.navIcon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.navIcon.filled svg{fill:currentColor;stroke:currentColor}
+@media(max-width:390px){.tripPage{padding-left:18px;padding-right:18px}.tripVyva{font-size:43px}.tripTagline{font-size:23px}.tripTitleBlock{margin-top:96px}.tripTitleBlock h1{font-size:44px}.tripCountdown,.tripDateRange{font-size:18px}.tripQuick{gap:6px;margin-left:0;margin-right:0}.tripQuick button>span{width:56px;height:56px}.tripQuick small{font-size:14px}.flightWhiteCard{grid-template-columns:1fr 1.15fr 1fr 14px;padding:17px 13px}.flightAirport b{font-size:31px}.flightAirport small{font-size:12px}.flightAirport span{font-size:16px}.menuCopy b{font-size:18px}.menuCopy small{font-size:13px}.menuCard{grid-template-columns:58px 1fr 18px;padding:12px}.menuIcon{width:52px;height:52px}.memoryStrip em{font-size:19px}#bottomNav button{font-size:10px}.navIcon{width:26px;height:26px}}
+</style>
+
+</head>
+<body>
+
+<section id="home" class="screen on"><div class="w">
+<div class="logo">VYVA</div><div class="muted">More than a trip ♡</div>
+<div class="hero"><small>IL TUO PROSSIMO RICORDO</small><h1>Costruiamo il viaggio intorno a ciò che vorrai ricordare.</h1><p>Organizza, vivi e custodisci ogni momento in un unico posto.</p><button class="btn" onclick="startCreate()">＋ Crea un viaggio</button></div>
+<h2>I miei viaggi</h2><div id="homeTrips"></div>
+</div></section>
+
+<section id="create" class="screen"><div class="w">
+<button onclick="go('home')" class="choice">‹ Home</button><h2>Crea viaggio</h2>
+<div class="progress"><i id="bar"></i></div><div id="stepLabel" class="muted"></div>
+
+<div class="step on">
+<h1>Dove vuoi andare?</h1>
+<div class="field"><label>DESTINAZIONE</label><input id="destination" placeholder="Es. Londra"></div>
+</div>
+
+<div class="step">
+<h1>Quando parti?</h1>
+<div class="field"><label>PARTENZA</label><input id="startDate" type="date" onchange="syncTripDates()"></div>
+<div class="field"><label>RITORNO</label><input id="endDate" type="date"></div>
+</div>
+
+<div class="step">
+<h1>Chi viaggia?</h1><p class="muted">Dividiamo i viaggiatori per fascia d'età.</p>
+<div class="two">
+<div class="field"><label>ADULTI 18+</label><select id="adults" onchange="buildTravelerNames()"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+<div class="field"><label>RAGAZZI 13–17</label><select id="teens" onchange="buildTravelerNames()"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+<div class="field"><label>BAMBINI 2–12</label><select id="children" onchange="buildTravelerNames()"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+<div class="field"><label>NEONATI 0–1</label><select id="infants" onchange="buildTravelerNames()"><option>0</option><option>1</option><option>2</option><option>3</option></select></div>
+</div>
+<div id="travelerNames"></div>
+</div>
+
+<div class="step">
+<h1>Come ci arrivi?</h1>
+<div class="choices" id="transportChoices">
+<button class="choice on" data-v="Volo" onclick="pickTransport(this)">✈️<br><b>Volo</b></button>
+<button class="choice" data-v="Treno" onclick="pickTransport(this)">🚆<br><b>Treno</b></button>
+<button class="choice" data-v="Bus" onclick="pickTransport(this)">🚌<br><b>Bus</b></button>
+<button class="choice" data-v="Auto" onclick="pickTransport(this)">🚗<br><b>Auto</b></button>
+<button class="choice" data-v="Traghetto" onclick="pickTransport(this)">⛴️<br><b>Traghetto</b></button>
+<button class="choice" data-v="Altro" onclick="pickTransport(this)">＋<br><b>Altro</b></button>
+</div>
+
+<div id="flightFields">
+<div class="field">
+<label>AEROPORTO DI PARTENZA</label>
+<input id="fromAirport" autocomplete="off" placeholder="Scrivi città, aeroporto o codice IATA" oninput="airportSearch('from')">
+<div id="fromSuggestions" class="autocomplete hide"></div>
+</div>
+<div class="field">
+<label>AEROPORTO DI ARRIVO</label>
+<input id="toAirport" autocomplete="off" placeholder="Scrivi città, aeroporto o codice IATA" oninput="airportSearch('to')">
+<div id="toSuggestions" class="autocomplete hide"></div>
+</div>
+<div class="two">
+<div class="field"><label>DATA PARTENZA VOLO</label><input id="flightDepartDate" type="date" onchange="recalcFlight()"></div>
+<div class="field"><label>ORARIO PARTENZA</label><input id="departTime" type="time" onchange="recalcFlight()"></div>
+</div>
+<div class="two">
+<div class="field"><label>DATA ARRIVO VOLO</label><input id="flightArrivalDate" type="date" onchange="recalcFlight()"></div>
+<div class="field"><label>ORARIO ARRIVO</label><input id="arrivalTime" type="time" onchange="recalcFlight()"></div>
+</div>
+<div class="two">
+<div class="field"><label>NUMERO VOLO</label><input id="flightNo" placeholder="Es. U2 2834"></div>
+<div class="field"><label>CODICE PRENOTAZIONE</label><input id="bookingCode" placeholder="Es. AB12CD"></div>
+</div>
+<div class="infoStrip">
+<div class="infoBox"><small>DURATA VOLO</small><b id="flightDuration">—</b></div>
+<div class="infoBox"><small>DIFFERENZA FUSO</small><b id="timezoneDiff">—</b></div>
+</div>
+<div id="flightHint" class="muted" style="font-size:13px"></div>
+</div>
+</div>
+
+<div class="step">
+<h1>Che viaggio vuoi vivere?</h1>
+<div class="field"><label>STILE</label><select id="style"><option>Scoperta</option><option>Relax</option><option>Famiglia</option><option>Romantico</option><option>Avventura</option><option>Food & Culture</option></select></div>
+<div class="field"><label>RITMO</label><select id="pace"><option>Equilibrato</option><option>Lento</option><option>Intenso</option></select></div>
+<div class="field"><label>OCCASIONE</label><select id="occasion" onchange="updateWhose()"><option>Nessuna</option><option>Compleanno</option><option>Anniversario</option><option>Luna di miele</option><option>Altro</option></select></div>
+<div id="whoseWrap" class="field hide"><label>DI CHI?</label><select id="whose"></select></div>
+</div>
+
+<div class="step">
+<h1>Scegli la copertina</h1><p class="muted">Sarà il volto del tuo viaggio VYVA.</p>
+<div id="covers" class="covers"></div>
+</div>
+</div>
+
+<div id="actions" class="actions hide"><div>
+<button class="btn secondary" onclick="prevStep()">Indietro</button>
+<button id="nextBtn" class="btn" onclick="nextStep()">Continua</button>
+</div></div>
+</section>
+
+<section id="trip" class="screen">
+<div id="tripbg" class="tripbg">
+  <div class="tripOverlay"></div>
+  <div class="tripPage">
+    <header class="tripHeader">
+      <div>
+        <div class="tripVyva">VYVA</div>
+        <div class="tripTagline">More than a trip ♡</div>
+      </div>
+      <div class="tripHeaderActions">
+        <button aria-label="Cerca"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></button>
+        <button aria-label="Altro"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.8" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.8" fill="currentColor" stroke="none"/></svg></button>
+      </div>
+    </header>
+
+    <div class="tripTitleBlock">
+      <div class="tripFlags" id="tripFlags">🇬🇧 🇮🇹</div>
+      <h1 id="tdest"></h1>
+      <div id="tcount" class="tripCountdown"></div>
+      <div id="tdates" class="tripDateRange"></div>
+    </div>
+
+    <div class="tripQuick">
+      <button><span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 9h18"/></svg></span><small>Nuova<br>Attività</small></button>
+      <button><span><svg viewBox="0 0 24 24"><path d="m2 16 8-3V4.8a2 2 0 0 1 4 0V13l8 3v2l-8-1.3V21l2 1v1l-4-1-4 1v-1l2-1v-4.3L2 18z"/></svg></span><small id="ttransport">Voli</small></button>
+      <button><span><svg viewBox="0 0 24 24"><path d="M3 20V8M21 20v-7a3 3 0 0 0-3-3H9v7h12M3 17h18"/><rect x="4" y="7" width="5" height="6" rx="1.5"/></svg></span><small>Hotel</small></button>
+      <button><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2z"/><path d="M9 3v16M15 5v16"/></svg></span><small>Guida<br>Città</small></button>
+    </div>
+
+    <div id="routeCard" class="flightWhiteCard">
+      <div class="flightAirport">
+        <small id="fromCity">Partenza</small>
+        <b id="fcode">—</b>
+        <span id="departOnly"></span>
+      </div>
+      <div class="flightMiddle">
+        <div class="flightRouteLine"><i></i><svg viewBox="0 0 24 24"><path d="m2 16 8-3V4.8a2 2 0 0 1 4 0V13l8 3v2l-8-1.3V21l2 1v1l-4-1-4 1v-1l2-1v-4.3L2 18z"/></svg><i></i></div>
+        <small id="flightDateCenter"></small>
+      </div>
+      <div class="flightAirport right">
+        <small id="toCity">Arrivo</small>
+        <b id="tcode">—</b>
+        <span id="arrivalOnly"></span>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+
+    <div class="menuCards">
+      <button class="menuCard">
+        <span class="menuIcon rose"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 9h18"/></svg></span>
+        <span class="menuCopy"><b>Itinerario</b><small>Scopri il programma giorno per giorno</small></span>
+        <span class="menuChevron">›</span>
+      </button>
+      <button class="menuCard">
+        <span class="menuIcon sky"><svg viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v5h5M9 12h6M9 16h6"/></svg></span>
+        <span class="menuCopy"><b>Documenti</b><small>Passaporti, prenotazioni, biglietti</small></span>
+        <span class="menuChevron">›</span>
+      </button>
+      <button class="menuCard">
+        <span class="menuIcon mint"><svg viewBox="0 0 24 24"><path d="M12 22s7-6.4 7-13A7 7 0 0 0 5 9c0 6.6 7 13 7 13z"/><circle cx="12" cy="9" r="2.4"/></svg></span>
+        <span class="menuCopy"><b>Esperienze</b><small>Attività, tour e cose da non perdere</small></span>
+        <span class="menuChevron">›</span>
+      </button>
+      <button class="menuCard">
+        <span class="menuIcon gold"><svg viewBox="0 0 24 24"><path d="M4 7h4l1.5-2h5L16 7h4a2 2 0 0 1 2 2v10H2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4"/></svg></span>
+        <span class="menuCopy"><b>Moments</b><small>Foto, video e ricordi speciali</small></span>
+        <span class="menuChevron">›</span>
+      </button>
+    </div>
+
+    <div class="memoryStrip"><span class="sun">☼</span><em>Colleziona momenti, non cose</em><span>♡</span></div>
+  </div>
+</div>
+</section>
+
+<section id="panel" class="screen"><div class="w"><div class="logo">VYVA</div><h1 id="ptitle"></h1><p id="ptext" class="muted"></p><div id="pbody"></div></div></section>
+
+<nav id="bottomNav">
+<button class="on" data-t="home" onclick="navTo('home')"><span class="navIcon filled"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.7 12 3l9 7.7v9.1a1.2 1.2 0 0 1-1.2 1.2h-5.1v-6.6H9.3V21H4.2A1.2 1.2 0 0 1 3 19.8z"/></svg></span><span>Home</span></button>
+<button data-t="Viaggi" onclick="navTo('Viaggi')"><span class="navIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7V5.5A2.5 2.5 0 0 1 10.5 3h3A2.5 2.5 0 0 1 16 5.5V7"/><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7v13M15 7v13M4 11h16"/></svg></span><span>Viaggi</span></button>
+<button data-t="Wallet" onclick="navTo('Wallet')"><span class="navIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18a2 2 0 0 1 2 2v2H7a3 3 0 0 0 0 6h13v2a2 2 0 0 1-2 2H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M20 9H7a3 3 0 0 0 0 6h13z"/><circle cx="8.5" cy="12" r=".8"/></svg></span><span>Wallet</span></button>
+<button data-t="Mappe" onclick="navTo('Mappe')"><span class="navIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2z"/><path d="M9 3v16M15 5v16"/></svg></span><span>Mappe</span></button>
+<button data-t="Moments" onclick="navTo('Moments')"><span class="navIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 1 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6z"/></svg></span><span>Moments</span></button>
+<button data-t="Profilo" onclick="navTo('Profilo')"><span class="navIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4.5 21v-2.5A5.5 5.5 0 0 1 10 13h4a5.5 5.5 0 0 1 5.5 5.5V21z"/></svg></span><span>Profilo</span></button>
+</nav>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* Database aeroporti LOCALE dentro il file.
+   È già globale per i principali hub e si può espandere al dataset mondiale completo senza cambiare il flusso. */
+const AIRPORTS=[
+['Milano','Malpensa','MXP','Italia','Europe/Rome',45.6306,8.7281],['Milano','Linate','LIN','Italia','Europe/Rome',45.4451,9.2767],['Bergamo','Orio al Serio','BGY','Italia','Europe/Rome',45.6739,9.7042],
+['Roma','Fiumicino','FCO','Italia','Europe/Rome',41.8003,12.2389],['Roma','Ciampino','CIA','Italia','Europe/Rome',41.7994,12.5949],['Venezia','Marco Polo','VCE','Italia','Europe/Rome',45.5053,12.3519],
+['Torino','Caselle','TRN','Italia','Europe/Rome',45.2008,7.6496],['Bologna','Guglielmo Marconi','BLQ','Italia','Europe/Rome',44.5354,11.2887],['Napoli','Capodichino','NAP','Italia','Europe/Rome',40.8860,14.2908],
+['Palermo','Falcone Borsellino','PMO','Italia','Europe/Rome',38.1759,13.0910],['Catania','Fontanarossa','CTA','Italia','Europe/Rome',37.4668,15.0664],
+['Londra','Heathrow','LHR','Regno Unito','Europe/London',51.4700,-0.4543],['Londra','Gatwick','LGW','Regno Unito','Europe/London',51.1537,-0.1821],['Londra','Stansted','STN','Regno Unito','Europe/London',51.8850,0.2350],['Londra','Luton','LTN','Regno Unito','Europe/London',51.8747,-0.3683],['Londra','City','LCY','Regno Unito','Europe/London',51.5053,0.0553],
+['Parigi','Charles de Gaulle','CDG','Francia','Europe/Paris',49.0097,2.5479],['Parigi','Orly','ORY','Francia','Europe/Paris',48.7262,2.3652],['Madrid','Adolfo Suárez Madrid-Barajas','MAD','Spagna','Europe/Madrid',40.4983,-3.5676],['Barcellona','El Prat','BCN','Spagna','Europe/Madrid',41.2974,2.0833],
+['Amsterdam','Schiphol','AMS','Paesi Bassi','Europe/Amsterdam',52.3105,4.7683],['Francoforte','Frankfurt Airport','FRA','Germania','Europe/Berlin',50.0379,8.5622],['Monaco','Franz Josef Strauss','MUC','Germania','Europe/Berlin',48.3538,11.7861],
+['Zurigo','Zürich Airport','ZRH','Svizzera','Europe/Zurich',47.4581,8.5555],['Vienna','Vienna International','VIE','Austria','Europe/Vienna',48.1103,16.5697],['Lisbona','Humberto Delgado','LIS','Portogallo','Europe/Lisbon',38.7742,-9.1342],
+['Dublino','Dublin Airport','DUB','Irlanda','Europe/Dublin',53.4213,-6.2701],['Atene','Eleftherios Venizelos','ATH','Grecia','Europe/Athens',37.9364,23.9445],['Istanbul','Istanbul Airport','IST','Turchia','Europe/Istanbul',41.2753,28.7519],
+['New York','John F. Kennedy','JFK','USA','America/New_York',40.6413,-73.7781],['New York','LaGuardia','LGA','USA','America/New_York',40.7769,-73.8740],['Newark','Newark Liberty','EWR','USA','America/New_York',40.6895,-74.1745],
+['Los Angeles','Los Angeles International','LAX','USA','America/Los_Angeles',33.9416,-118.4085],['San Francisco','San Francisco International','SFO','USA','America/Los_Angeles',37.6213,-122.3790],['Miami','Miami International','MIA','USA','America/New_York',25.7959,-80.2870],
+['Chicago','O’Hare','ORD','USA','America/Chicago',41.9742,-87.9073],['Toronto','Pearson','YYZ','Canada','America/Toronto',43.6777,-79.6248],['Vancouver','Vancouver International','YVR','Canada','America/Vancouver',49.1967,-123.1815],
+['Dubai','Dubai International','DXB','Emirati Arabi Uniti','Asia/Dubai',25.2532,55.3657],['Doha','Hamad International','DOH','Qatar','Asia/Qatar',25.2731,51.6081],['Abu Dhabi','Zayed International','AUH','Emirati Arabi Uniti','Asia/Dubai',24.4330,54.6511],
+['Tokyo','Haneda','HND','Giappone','Asia/Tokyo',35.5494,139.7798],['Tokyo','Narita','NRT','Giappone','Asia/Tokyo',35.7719,140.3929],['Seoul','Incheon','ICN','Corea del Sud','Asia/Seoul',37.4602,126.4407],
+['Singapore','Changi','SIN','Singapore','Asia/Singapore',1.3644,103.9915],['Bangkok','Suvarnabhumi','BKK','Thailandia','Asia/Bangkok',13.6900,100.7501],['Hong Kong','Hong Kong International','HKG','Hong Kong','Asia/Hong_Kong',22.3080,113.9185],
+['Sydney','Kingsford Smith','SYD','Australia','Australia/Sydney',-33.9399,151.1753],['Melbourne','Melbourne Airport','MEL','Australia','Australia/Melbourne',-37.6690,144.8410],
+['Città del Capo','Cape Town International','CPT','Sudafrica','Africa/Johannesburg',-33.9700,18.6017],['Johannesburg','O. R. Tambo','JNB','Sudafrica','Africa/Johannesburg',-26.1337,28.2420],
+['Marrakech','Menara','RAK','Marocco','Africa/Casablanca',31.6069,-8.0363],['Il Cairo','Cairo International','CAI','Egitto','Africa/Cairo',30.1219,31.4056],
+['São Paulo','Guarulhos','GRU','Brasile','America/Sao_Paulo',-23.4356,-46.4731],['Buenos Aires','Ezeiza','EZE','Argentina','America/Argentina/Buenos_Aires',-34.8222,-58.5358],['Città del Messico','Benito Juárez','MEX','Messico','America/Mexico_City',19.4361,-99.0719]
+].map(a=>({city:a[0],name:a[1],iata:a[2],country:a[3],tz:a[4],lat:a[5],lon:a[6]}));
+
+const COVER_URLS=[
+'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1200&q=90',
+'https://images.unsplash.com/photo-1529655683826-aba9b3e77383?auto=format&fit=crop&w=1200&q=90',
+'https://images.unsplash.com/photo-1486299267070-83823f5448dd?auto=format&fit=crop&w=1200&q=90',
+'https://images.unsplash.com/photo-1448906654166-444d494666b3?auto=format&fit=crop&w=1200&q=90'
+];
+
+let step=0,transport='Volo',selectedCover=0,selectedFrom=null,selectedTo=null;
+
+function safeTrips(){try{const a=JSON.parse(localStorage.getItem('vyvaTrips')||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
+function go(id){document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));$(id).classList.add('on');$('actions').classList.toggle('hide',id!=='create');window.scrollTo(0,0)}
+function setActive(t){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t))}
+function startCreate(){step=0;renderStep();buildTravelerNames();renderCovers();go('create');setActive('home')}
+function renderStep(){document.querySelectorAll('.step').forEach((e,i)=>e.classList.toggle('on',i===step));$('bar').style.width=((step+1)/6*100)+'%';$('stepLabel').textContent=`Passaggio ${step+1} di 6`;$('nextBtn').textContent=step===5?'Crea il viaggio':'Continua';if(step===3)prefillFlightDates()}
+function nextStep(){if(step===0&&!$('destination').value.trim())return alert('Inserisci la destinazione.');if(step===1&&(!$('startDate').value||!$('endDate').value))return alert('Scegli partenza e ritorno.');if(step<5){step++;renderStep();window.scrollTo(0,0)}else createTrip()}
+function prevStep(){if(step>0){step--;renderStep();window.scrollTo(0,0)}}
+function syncTripDates(){$('endDate').min=$('startDate').value;if(!$('endDate').value||$('endDate').value<$('startDate').value)$('endDate').value=$('startDate').value;prefillFlightDates()}
+function prefillFlightDates(){if($('startDate').value){if(!$('flightDepartDate').value)$('flightDepartDate').value=$('startDate').value;if(!$('flightArrivalDate').value)$('flightArrivalDate').value=$('startDate').value}}
+function buildTravelerNames(){
+ const box=$('travelerNames');const old=[...box.querySelectorAll('input')].map(x=>x.value);
+ const groups=[['Adulto',+$('adults').value],['Ragazzo',+$('teens').value],['Bambino',+$('children').value],['Neonato',+$('infants').value]];
+ let html='',k=0;groups.forEach(([label,n])=>{for(let i=1;i<=n;i++){html+=`<div class="field"><label>NOME ${label.toUpperCase()} ${i}</label><input class="travelerName" data-type="${label}" value="${old[k]||''}" placeholder="${label} ${i}"></div>`;k++}});box.innerHTML=html;updateWhose()
+}
+function travelerData(){return [...document.querySelectorAll('.travelerName')].map((x,i)=>({name:x.value.trim()||`Viaggiatore ${i+1}`,type:x.dataset.type||'Viaggiatore'}))}
+function updateWhose(){const show=$('occasion').value==='Compleanno';$('whoseWrap').classList.toggle('hide',!show);$('whose').innerHTML=travelerData().map(x=>`<option>${x.name}</option>`).join('')}
+function pickTransport(el){transport=el.dataset.v;document.querySelectorAll('#transportChoices .choice').forEach(x=>x.classList.remove('on'));el.classList.add('on');$('flightFields').classList.toggle('hide',transport!=='Volo')}
+
+function norm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+function airportSearch(which){
+ const input=$(which==='from'?'fromAirport':'toAirport'),box=$(which==='from'?'fromSuggestions':'toSuggestions'),q=norm(input.value.trim());
+ if(which==='from')selectedFrom=null;else selectedTo=null;
+ if(q.length<1){box.classList.add('hide');recalcFlight();return}
+ const res=AIRPORTS.filter(a=>norm(`${a.city} ${a.name} ${a.iata} ${a.country}`).includes(q)).slice(0,12);
+ box.innerHTML=res.length?res.map((a,i)=>`<button type="button" class="suggestion" onclick="chooseAirport('${which}',${AIRPORTS.indexOf(a)})"><b>${a.city} · ${a.iata}</b><small>${a.name} — ${a.country}</small></button>`).join(''):`<div class="suggestion muted">Nessun aeroporto trovato nel database locale.</div>`;
+ box.classList.remove('hide')
+}
+function chooseAirport(which,index){
+ const a=AIRPORTS[index],input=$(which==='from'?'fromAirport':'toAirport'),box=$(which==='from'?'fromSuggestions':'toSuggestions');
+ input.value=`${a.city} — ${a.name} (${a.iata})`;box.classList.add('hide');if(which==='from')selectedFrom=a;else selectedTo=a;recalcFlight()
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.field'))document.querySelectorAll('.autocomplete').forEach(x=>x.classList.add('hide'))});
+
+function tzOffsetMinutes(instant,tz){
+ const f=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+ const parts=Object.fromEntries(f.formatToParts(instant).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));
+ const asUTC=Date.UTC(+parts.year,+parts.month-1,+parts.day,+parts.hour,+parts.minute,+parts.second);
+ return (asUTC-instant.getTime())/60000
+}
+function localInZoneToUTC(dateStr,timeStr,tz){
+ if(!dateStr||!timeStr||!tz)return null;const [y,m,d]=dateStr.split('-').map(Number),[hh,mm]=timeStr.split(':').map(Number);
+ let guess=new Date(Date.UTC(y,m-1,d,hh,mm,0));let off=tzOffsetMinutes(guess,tz);let utc=new Date(guess.getTime()-off*60000);
+ let off2=tzOffsetMinutes(utc,tz);if(off2!==off)utc=new Date(guess.getTime()-off2*60000);return utc
+}
+function formatDuration(ms){if(ms<0)return'—';const mins=Math.round(ms/60000),h=Math.floor(mins/60),m=mins%60;return `${h}h ${String(m).padStart(2,'0')}m`}
+function formatTzDiff(mins){if(mins===0)return'0h';const sign=mins>0?'+':'−',a=Math.abs(mins),h=Math.floor(a/60),m=a%60;return sign+h+'h'+(m?` ${m}m`:'')}
+function recalcFlight(){
+ $('flightDuration').textContent='—';$('timezoneDiff').textContent='—';$('flightHint').textContent='';
+ if(!selectedFrom||!selectedTo){if($('fromAirport').value||$('toAirport').value)$('flightHint').textContent='Seleziona entrambi gli aeroporti dalla lista per calcolare durata e fuso orario.';return}
+ const dep=localInZoneToUTC($('flightDepartDate').value,$('departTime').value,selectedFrom.tz);
+ const arr=localInZoneToUTC($('flightArrivalDate').value,$('arrivalTime').value,selectedTo.tz);
+ if(dep&&arr){let ms=arr-dep;if(ms<0){$('flightHint').textContent='Controlla la data di arrivo: risulta precedente alla partenza.'}else $('flightDuration').textContent=formatDuration(ms)}
+ if(dep){const diff=tzOffsetMinutes(dep,selectedTo.tz)-tzOffsetMinutes(dep,selectedFrom.tz);$('timezoneDiff').textContent=formatTzDiff(diff)}
+}
+
+function renderCovers(){$('covers').innerHTML=COVER_URLS.map((u,i)=>`<button type="button" class="cover ${i===selectedCover?'on':''}" style="background-image:url('${u}')" onclick="selectedCover=${i};document.querySelectorAll('.cover').forEach(x=>x.classList.remove('on'));this.classList.add('on')"></button>`).join('')}
+function fmtDate(s){if(!s)return'';return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(s+'T12:00:00'))}
+function createTrip(){
+ const travelers=travelerData();
+ const trip={id:Date.now(),destination:$('destination').value.trim(),start:$('startDate').value,end:$('endDate').value,travelers,
+ adults:+$('adults').value,teens:+$('teens').value,children:+$('children').value,infants:+$('infants').value,transport,
+ from:selectedFrom,to:selectedTo,fromText:$('fromAirport').value.trim(),toText:$('toAirport').value.trim(),
+ flightDepartDate:$('flightDepartDate').value,departTime:$('departTime').value,flightArrivalDate:$('flightArrivalDate').value,arrivalTime:$('arrivalTime').value,
+ flightNo:$('flightNo').value.trim(),bookingCode:$('bookingCode').value.trim(),duration:$('flightDuration').textContent,tzDiff:$('timezoneDiff').textContent,
+ style:$('style').value,pace:$('pace').value,occasion:$('occasion').value,whose:$('whose').value||'',cover:COVER_URLS[selectedCover]};
+ const a=safeTrips();a.unshift(trip);localStorage.setItem('vyvaTrips',JSON.stringify(a));localStorage.setItem('vyvaCurrentTrip',String(trip.id));
+ renderHomeTrips();showTrip(trip);setActive('Viaggi')
+}
+function showTrip(t){
+ $('tripbg').style.backgroundImage=`url('${t.cover}')`;$('tdest').textContent=t.destination||'Il tuo viaggio';$('tdates').textContent=`${fmtDate(t.start)} — ${fmtDate(t.end)}`;
+ const days=Math.ceil((new Date(t.start+'T12:00:00')-new Date())/86400000);$('tcount').textContent=days>0?`Mancano ${days} giorni`:days===0?'Si parte oggi ♡':'Il tuo viaggio VYVA';
+ $('ttransport').textContent=t.transport||'Volo';$('routeCard').classList.toggle('hide',t.transport!=='Volo');
+ $('fcode').textContent=t.from?.iata||'—';$('tcode').textContent=t.to?.iata||'—';$('fromCity').textContent=t.from?.city||'Partenza';$('toCity').textContent=t.to?.city||'Arrivo';
+ $('ttimes').textContent=[t.departTime,t.arrivalTime].filter(Boolean).join(' → ');$('tflightno').textContent=t.flightNo||'';$('tduration').textContent=t.duration&&t.duration!=='—'?`Durata ${t.duration}`:'';$('ttz').textContent=t.tzDiff&&t.tzDiff!=='—'?`Fuso ${t.tzDiff}`:'';
+ go('trip')
+}
+function travelerSummary(t){const bits=[];if(t.adults)bits.push(`${t.adults} adult${t.adults===1?'o':'i'}`);if(t.teens)bits.push(`${t.teens} ragazz${t.teens===1?'o':'i'}`);if(t.children)bits.push(`${t.children} bambin${t.children===1?'o':'i'}`);if(t.infants)bits.push(`${t.infants} neonat${t.infants===1?'o':'i'}`);return bits.join(' · ')||`${(t.travelers||[]).length} viaggiatori`}
+function renderHomeTrips(){
+ const a=safeTrips();$('homeTrips').innerHTML=a.length?a.map(t=>`<button class="tripmini" style="background-image:url('${t.cover||COVER_URLS[0]}')" onclick="openTrip(${t.id})"><span class="txt"><b>${t.destination||'Viaggio'}</b><small>${fmtDate(t.start)} · ${travelerSummary(t)}</small></span></button>`).join(''):'<div class="card muted">Il tuo primo viaggio VYVA inizierà qui.</div>'
+}
+function openTrip(id){const t=safeTrips().find(x=>x.id===id);if(t){showTrip(t);setActive('Viaggi')}}
+function navTo(t){
+ setActive(t);if(t==='home'){renderHomeTrips();go('home');return}
+ const copy={Viaggi:'Tutti i viaggi che hai creato con VYVA.',Wallet:'Prenotazioni, documenti, boarding pass, visti e assicurazioni.',Mappe:'Tappe, luoghi e itinerari dei tuoi viaggi.',Moments:'Quale momento vorrai ricordare?',Profilo:'Persone e preferenze che rendono ogni viaggio tuo.'};
+ $('ptitle').textContent=t;$('ptext').textContent=copy[t]||'';$('pbody').innerHTML=t==='Viaggi'?(safeTrips().length?safeTrips().map(x=>`<button class="tripmini" style="background-image:url('${x.cover||COVER_URLS[0]}')" onclick="openTrip(${x.id})"><span class="txt"><b>${x.destination||'Viaggio'}</b><small>${travelerSummary(x)}</small></span></button>`).join(''):'<div class="card">Non hai ancora creato viaggi.</div>'):'<div class="card">Questa sezione è già nella struttura VYVA e la svilupperemo dopo aver stabilizzato il flusso principale.</div>';go('panel')
+}
+
+buildTravelerNames();renderCovers();renderHomeTrips();
+</script>
+
+<script id="vyva-approved-ui-behavior">
+function countryFlag(country){
+ const m={'Italia':'🇮🇹','Regno Unito':'🇬🇧','Francia':'🇫🇷','Spagna':'🇪🇸','Paesi Bassi':'🇳🇱','Germania':'🇩🇪','Svizzera':'🇨🇭','Austria':'🇦🇹','Portogallo':'🇵🇹','Irlanda':'🇮🇪','Grecia':'🇬🇷','Turchia':'🇹🇷','USA':'🇺🇸','Canada':'🇨🇦','Emirati Arabi Uniti':'🇦🇪','Qatar':'🇶🇦','Giappone':'🇯🇵','Corea del Sud':'🇰🇷','Singapore':'🇸🇬','Thailandia':'🇹🇭','Hong Kong':'🇭🇰','Australia':'🇦🇺','Sudafrica':'🇿🇦','Marocco':'🇲🇦','Egitto':'🇪🇬','Brasile':'🇧🇷','Argentina':'🇦🇷','Messico':'🇲🇽'};
+ return m[country]||'✦';
+}
+showTrip = function(t){
+ $('tripbg').style.backgroundImage=`url('${t.cover}')`;
+ $('tdest').textContent=t.destination||'Il tuo viaggio';
+ $('tdates').textContent=`${fmtDate(t.start)} – ${fmtDate(t.end)}`;
+ const start=new Date(t.start+'T12:00:00'),end=new Date(t.end+'T12:00:00');
+ const tripDays=Math.max(1,Math.round((end-start)/86400000)+1);
+ const until=Math.ceil((start-new Date())/86400000);
+ $('tcount').textContent=until>0?`Inizia tra ${until} giorni · viaggio di ${tripDays} giorni`:`Viaggio di ${tripDays} giorni`;
+ $('ttransport').textContent=t.transport==='Volo'?'Voli':(t.transport||'Volo');
+ $('routeCard').classList.toggle('hide',t.transport!=='Volo');
+ $('fcode').textContent=t.from?.iata||'—';
+ $('tcode').textContent=t.to?.iata||'—';
+ $('fromCity').textContent=t.from?`${t.from.city} ${t.from.name}`:'Partenza';
+ $('toCity').textContent=t.to?`${t.to.city} ${t.to.name}`:'Arrivo';
+ $('departOnly').textContent=t.departTime||'';
+ $('arrivalOnly').textContent=t.arrivalTime||'';
+ $('flightDateCenter').textContent=t.flightDepartDate?new Intl.DateTimeFormat('it-IT',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}).format(new Date(t.flightDepartDate+'T12:00:00')):'';
+ $('tripFlags').textContent=`${countryFlag(t.to?.country)} ${countryFlag(t.from?.country||'Italia')}`;
+ go('trip');
+}
+</script>
+
+</body></html>
