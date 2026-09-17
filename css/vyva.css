@@ -1,0 +1,797 @@
+/* inline-style-1 */
+:root{--ink:#0b1835;--paper:#f5f4f1;--card:#fff;--line:#dedbd6;--muted:#6f7683;--nav:92px;--blue:#0b244e}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif}
+body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom))}
+button,input,select{font:inherit}button{cursor:pointer}.screen{display:none;min-height:100vh}.screen.on{display:block}.hide{display:none!important}
+.w{max-width:760px;margin:auto;padding:calc(26px + env(safe-area-inset-top)) 20px 150px}.logo{font-size:30px;font-weight:900;letter-spacing:.18em}.muted{color:var(--muted)}h1{font-size:38px;line-height:1.06;margin:28px 0 12px}h2{font-size:25px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;margin:12px 0}
+.hero{background:#10131a;color:#fff;border-radius:30px;padding:25px;margin-top:28px}.hero h1{color:#fff}.btn{border:0;border-radius:18px;padding:17px;width:100%;font-weight:800;background:#111827;color:#fff}.hero .btn{background:#fff;color:#111827}.secondary{background:#e6e2dc;color:#172033}
+.field{margin:17px 0;position:relative}.field label,.sectionLabel{display:block;font-size:12px;font-weight:850;letter-spacing:.03em;margin-bottom:7px}.field input,.field select{width:100%;padding:16px;border:1px solid #d9d5cf;border-radius:16px;background:#fff;outline:none;color:#101827}.field input:focus,.field select:focus{border-color:#172033}.field input[readonly]{background:#f1f3f6;color:#44506a}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.step{display:none}.step.on{display:block}.progress{height:5px;background:#ded9d2;border-radius:5px;margin:20px 0}.progress i{display:block;height:100%;background:#172033;border-radius:5px;transition:width .2s}.choices,.covers,.prefGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choice,.prefChoice{padding:17px;border:1px solid #ded9d2;border-radius:18px;background:#fff;text-align:left;color:#172033}.choice.on,.prefChoice.on{border:2px solid #172033;padding:16px;background:#f6f7f9}.prefChoice .emoji{font-size:24px;display:block;margin-bottom:7px}.prefChoice b{font-size:15px}.prefGroup{margin:21px 0}.prefGroup>label{display:block;font-size:13px;font-weight:850;margin-bottom:9px}
+.actions{position:fixed;left:0;right:0;bottom:calc(var(--nav) + env(safe-area-inset-bottom));z-index:80;padding:10px 20px;background:#f5f4f1ee;backdrop-filter:blur(14px)}.actions>div{max-width:720px;margin:auto;display:flex;gap:8px}.actions button{flex:1}
+.autocomplete{position:absolute;left:0;right:0;top:100%;z-index:120;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 35px #0002;max-height:320px;overflow:auto;margin-top:6px}.suggestion{display:block;width:100%;border:0;border-bottom:1px solid #eee;background:#fff;padding:13px 14px;text-align:left;color:#111827}.suggestion:last-child{border-bottom:0}.suggestion b{font-size:15px}.suggestion small{display:block;color:#6f7683;margin-top:3px;line-height:1.3}
+/* Calendario VYVA: selezione immediata, senza OK */
+.datePicks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}.datePick{border:1px solid #ddd8d1;background:#fff;border-radius:18px;padding:14px;text-align:left;color:#172033}.datePick.on{border:2px solid #172033;padding:13px}.datePick small{display:block;color:#7a8190;font-size:11px;font-weight:800}.datePick b{display:block;margin-top:4px;font-size:16px}.calendar{background:#fff;border:1px solid #e2ded8;border-radius:24px;padding:16px;box-shadow:0 8px 25px #0000000a}.calHead{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;margin-bottom:12px}.calHead button{width:42px;height:42px;border:0;border-radius:50%;background:#f0f2f5;color:#172033;font-size:25px}.calHead button:disabled{opacity:.2}.calTitle{text-align:center;font-weight:850;font-size:18px}.calWeek,.calDays{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calWeek span{text-align:center;font-size:11px;font-weight:800;color:#8a909c;padding:5px 0}.calDay{aspect-ratio:1;border:0;border-radius:50%;background:transparent;color:#172033;font-size:14px}.calDay:hover{background:#eef1f5}.calDay.disabled{color:#c8cbd1;pointer-events:none}.calDay.today{box-shadow:inset 0 0 0 1px #adb5c2}.calDay.selected{background:#172033;color:#fff;font-weight:850}.calDay.inrange{background:#eef1f5;border-radius:12px}.calHint{font-size:13px;color:#697184;text-align:center;margin-top:12px}
+.infoStrip{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.infoBox{background:#eceff3;border-radius:17px;padding:13px}.infoBox small{display:block;color:#6f7683}.infoBox b{font-size:18px}.autoBadge{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:#e9f4ff;color:#0e6fac;font-size:12px;font-weight:800;margin-top:6px}
+.cover{height:235px;border:3px solid transparent;border-radius:22px;background-size:cover;background-position:center;padding:0;position:relative;overflow:hidden}.cover.on{border-color:#172033}.cover:after{content:"";position:absolute;inset:55% 0 0;background:linear-gradient(transparent,#0007)}.cover span{position:absolute;z-index:2;left:12px;bottom:11px;color:#fff;font-weight:800;text-shadow:0 1px 5px #0008}
+.tripmini{display:block;width:100%;height:165px;border:0;border-radius:23px;background-size:cover;background-position:center;position:relative;overflow:hidden;color:#fff;text-align:left;margin:10px 0}.tripmini:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent,#000d)}.tripmini .txt{position:absolute;z-index:2;bottom:15px;left:17px;right:17px}.tripmini b{font-size:22px}.tripmini small{display:block;margin-top:4px}.tripminiWrap{position:relative}.tripminiWrap .tripmini{margin:10px 0}.flightLegTitle{display:flex;align-items:center;gap:10px;margin:24px 0 4px;font-size:16px;font-weight:900;color:#172033}.flightLegTitle:first-child{margin-top:8px}.flightLegTitle:after{content:"";height:1px;flex:1;background:#ddd8d1}.flightLegHint{font-size:12px;color:#727988;margin:-2px 0 8px}
+/* Schermata viaggio: riferimento grafico ufficiale */
+.tripbg{min-height:100vh;background-size:cover;background-position:center top;position:relative;color:#fff;padding-bottom:calc(122px + env(safe-area-inset-bottom))}.tripOverlay{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(4,12,31,.04) 0%,rgba(4,12,31,.03) 44%,rgba(4,12,31,.15) 62%,rgba(243,243,243,.30) 79%,#f3f3f3 100%)}.tripPage{position:relative;z-index:2;max-width:650px;margin:auto;padding:calc(22px + env(safe-area-inset-top)) 22px 42px}.tripHeader{display:flex;justify-content:space-between;align-items:flex-start}.tripVyva{font-size:44px;font-weight:300;letter-spacing:.05em;line-height:.95;text-shadow:0 2px 12px #0007}.tripTagline{font-family:"Snell Roundhand","Segoe Script","Brush Script MT",cursive;font-size:23px;margin:7px 0 0 4px;text-shadow:0 2px 10px #0007}.tripHeaderActions{display:flex;gap:10px}.tripHeaderActions button{display:flex;align-items:center;justify-content:center;width:55px;height:55px;border:0;border-radius:50%;background:rgba(20,24,37,.58);color:#fff;backdrop-filter:blur(12px)}.tripHeaderActions svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tripTitleBlock{text-align:center;margin-top:102px;text-shadow:0 2px 12px #0009}.tripFlags{font-size:35px;line-height:1}.tripTitleBlock h1{font-family:Georgia,"Times New Roman",serif;font-size:49px;font-weight:600;line-height:1;margin:6px 0 8px;color:#fff}.tripCountdown,.tripDateRange{font-size:18px;line-height:1.28}.tripQuick{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:31px 7px 20px}.tripQuick button{border:0;background:none;color:#fff;padding:0}.tripQuick button>span{display:flex;width:60px;height:60px;margin:auto;align-items:center;justify-content:center;border-radius:50%;background:rgba(31,34,44,.68);backdrop-filter:blur(10px)}.tripQuick svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.tripQuick small{display:block;font-size:14px;line-height:1.12;margin-top:7px;text-shadow:0 1px 7px #0009}
+.flightWhiteCard{display:grid;grid-template-columns:1fr 1.18fr 1fr 14px;gap:7px;align-items:center;background:rgba(255,255,255,.97);color:#071b43;border-radius:25px;padding:18px 15px;box-shadow:0 8px 28px #00000020}.flightAirport small{display:block;color:#222;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.flightAirport b{display:block;font-size:34px;line-height:1;margin:5px 0}.flightAirport span{font-size:17px}.flightAirport.right{text-align:right}.flightMiddle{text-align:center}.flightRouteLine{display:flex;align-items:center;gap:4px;color:#198ee8}.flightRouteLine i{height:2px;flex:1;background:#68bef4}.flightRouteLine svg{width:28px;height:28px;fill:#198ee8;stroke:#198ee8;stroke-width:1}.flightMiddle small{display:block;color:#33415e;font-size:12px;margin-top:7px}.chevron{font-size:34px;color:#0b1833}.menuCards{display:grid;gap:9px;margin-top:12px}.menuCard{width:100%;display:grid;grid-template-columns:59px 1fr 18px;align-items:center;border:0;border-radius:23px;background:rgba(255,255,255,.97);color:#091738;padding:12px 14px;text-align:left;box-shadow:0 6px 22px #0000000d}.menuIcon{display:flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:16px}.menuIcon svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.menuIcon.rose{background:#fde2e6;color:#c82a46}.menuIcon.sky{background:#def0fd;color:#1685ca}.menuIcon.mint{background:#e0f1e2;color:#0a9b5b}.menuIcon.gold{background:#fff0d5;color:#d48b00}.menuCopy b{display:block;font-size:18px}.menuCopy small{display:block;font-size:13px;color:#4d5873;margin-top:3px}.menuChevron{font-size:32px;color:#9097aa}.memoryStrip{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:12px;padding:15px 15px;border-radius:25px;background:rgba(224,224,224,.91);color:#102554}.memoryStrip em{font-family:"Snell Roundhand","Segoe Script","Brush Script MT",cursive;font-size:20px;font-style:normal}.memoryStrip .sun{font-size:28px}
+#bottomNav{position:fixed;z-index:1000;left:0;right:0;bottom:0;height:calc(var(--nav) + env(safe-area-inset-bottom));padding:7px 7px env(safe-area-inset-bottom);display:grid;grid-template-columns:repeat(6,1fr);background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-radius:29px 29px 0 0;box-shadow:0 -8px 28px #00000012}#bottomNav button{border:0;background:none;color:#4a5570;padding:5px 0 3px;font-size:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}#bottomNav button.on{color:#071b43;font-weight:850}.navIcon{width:27px;height:27px;display:block}.navIcon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.navIcon.filled svg{fill:currentColor;stroke:currentColor}
+@media(max-width:390px){.w{padding-left:16px;padding-right:16px}h1{font-size:34px}.tripPage{padding-left:17px;padding-right:17px}.tripVyva{font-size:40px}.tripTagline{font-size:21px}.tripHeaderActions button{width:51px;height:51px}.tripTitleBlock{margin-top:90px}.tripTitleBlock h1{font-size:44px}.tripCountdown,.tripDateRange{font-size:16px}.tripQuick{gap:5px;margin-left:0;margin-right:0}.tripQuick button>span{width:55px;height:55px}.tripQuick small{font-size:13px}.flightWhiteCard{padding:16px 12px}.flightAirport b{font-size:30px}.menuCopy b{font-size:17px}.menuCopy small{font-size:12px}.memoryStrip em{font-size:18px}.prefChoice{padding:14px}.prefChoice.on{padding:13px}}
+
+/* vyva-move-weather-css */
+.weatherCard{width:100%;border:0;margin:0 0 12px;padding:14px 16px;border-radius:22px;background:rgba(255,255,255,.94);color:#091738;display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;text-align:left;box-shadow:0 6px 22px #00000012;backdrop-filter:blur(12px)}
+.weatherIcon{width:48px;height:48px;border-radius:15px;background:#e8f3ff;display:flex;align-items:center;justify-content:center;font-size:27px}.weatherCopy b{display:block;font-size:16px}.weatherCopy small{display:block;color:#687187;margin-top:3px;line-height:1.3}.weatherTemp{font-size:25px;font-weight:850;white-space:nowrap}
+.moveHero{background:#10172b;color:#fff;border-radius:27px;padding:20px;margin:16px 0}.moveHero h2{margin:0 0 5px;font-size:27px}.moveHero p{margin:0;color:#cbd2df;line-height:1.4}
+.moveRoute{background:#fff;border:1px solid #dfdcd6;border-radius:22px;padding:16px;margin:13px 0}.moveRoute .field{margin:10px 0}.moveModes{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:14px 0}.moveMode{border:1px solid #ded9d2;border-radius:18px;background:#fff;color:#172033;padding:15px 10px;text-align:left}.moveMode.on{border:2px solid #172033;padding:14px 9px;background:#f5f7fa}.moveMode .mi{font-size:24px;display:block;margin-bottom:6px}
+.providerList{display:grid;gap:10px}.providerCard{background:#fff;border:1px solid #e1ded9;border-radius:20px;padding:16px}.providerHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.providerHead b{font-size:17px}.providerHead small{display:block;color:#747b88;margin-top:4px;line-height:1.35}.providerBadge{background:#eef2f7;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;color:#35425f;white-space:nowrap}
+.providerActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}.providerActions a,.providerActions button{border:0;border-radius:14px;padding:12px;text-align:center;text-decoration:none;font-weight:800;font-size:13px}.providerActions a{background:#101827;color:#fff}.providerActions button{background:#e9edf3;color:#172033}.moveNote{font-size:12px;color:#777f8d;line-height:1.45;margin-top:13px}
+.walletSectionTitle{font-size:14px;font-weight:900;letter-spacing:.03em;margin:22px 0 8px}.walletItem{background:#fff;border:1px solid #e0ddd8;border-radius:20px;padding:15px;margin:9px 0;display:grid;grid-template-columns:44px 1fr 38px;gap:11px;align-items:center}.walletItemIcon{width:44px;height:44px;border-radius:14px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:22px}.walletItem b{display:block;font-size:15px}.walletItem small{display:block;color:#737b8b;margin-top:3px;line-height:1.3}.walletDelete{width:36px;height:36px;border:0;border-radius:50%;background:#f6e8ea;color:#9e2634;font-size:17px}
+.weatherDetail{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:12px 0}.weatherDay{background:#fff;border:1px solid #e1ded8;border-radius:18px;padding:14px;text-align:center}.weatherDay .wi{font-size:28px}.weatherDay b{display:block;margin-top:5px}.weatherDay small{display:block;color:#70788a;margin-top:4px}.sectionAction{border:0;border-radius:15px;background:#e9edf3;color:#172033;padding:12px 14px;font-weight:800}
+
+/* vyva-trip-menu-css */
+.tripMenuBtn{
+  position:absolute;z-index:8;top:13px;right:13px;width:40px;height:40px;
+  border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.94);color:#101827;font-size:22px;font-weight:900;
+  letter-spacing:1px;box-shadow:0 4px 14px #0002;backdrop-filter:blur(10px)
+}
+.tripMenu{
+  position:absolute;z-index:12;top:58px;right:13px;width:174px;padding:6px;
+  border-radius:16px;background:rgba(255,255,255,.98);box-shadow:0 12px 32px #0003;
+  backdrop-filter:blur(18px)
+}
+.tripMenu.hide{display:none}
+.tripMenu button{
+  width:100%;border:0;background:transparent;text-align:left;padding:12px 11px;
+  border-radius:11px;color:#172033;font-size:14px;font-weight:750
+}
+.tripMenu button:active{background:#eef1f5}
+.tripMenu button.danger{color:#a31f2c}
+.tripmini .txt{right:54px}
+
+/* vyva-place-search-css */
+.placeField{position:relative}
+.placeInputRow{display:flex;gap:8px;align-items:center}
+.placeInputRow input{flex:1}
+.locateBtn{
+  flex:0 0 46px;width:46px;height:46px;border:1px solid #d9d6d1;border-radius:15px;
+  background:#f4f6f9;color:#102047;font-size:20px;display:flex;align-items:center;justify-content:center
+}
+.placeSuggestions{
+  position:absolute;z-index:80;left:0;right:0;top:calc(100% + 5px);
+  background:#fff;border:1px solid #dedbd6;border-radius:17px;
+  box-shadow:0 14px 34px #0002;overflow:hidden;max-height:320px;overflow-y:auto
+}
+.placeSuggestions.hide{display:none}
+.placeSuggestion{
+  width:100%;border:0;border-bottom:1px solid #efede9;background:#fff;
+  padding:12px 13px;display:grid;grid-template-columns:35px 1fr;gap:10px;
+  text-align:left;color:#15213d
+}
+.placeSuggestion:last-child{border-bottom:0}
+.placeSuggestion:active{background:#f3f5f8}
+.placeSuggestion .psi{
+  width:35px;height:35px;border-radius:11px;background:#edf2f7;
+  display:flex;align-items:center;justify-content:center;font-size:18px
+}
+.placeSuggestion b{display:block;font-size:14px;line-height:1.25}
+.placeSuggestion small{display:block;color:#71798a;font-size:12px;line-height:1.35;margin-top:2px}
+.placeSearching,.placeEmpty{
+  padding:12px 14px;color:#71798a;font-size:13px
+}
+.placeCredit{
+  display:block;margin-top:8px;color:#8a909b;font-size:10px;text-align:right
+}
+
+/* vyva-mobility-advisor-css */
+.mobilityAdvisor{
+  background:#fff;border:1px solid #dfdcd7;border-radius:24px;padding:17px;margin:0 0 14px;
+  color:#14203d;box-shadow:0 5px 18px #0000000b
+}
+.mobilityAdvisor h3{margin:0 0 6px;font-size:20px}
+.mobilityAdvisor p{margin:0;color:#667085;line-height:1.42;font-size:14px}
+.mobilityTagRow{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+.mobilityTag{border:1px solid #dcd9d3;background:#f7f8fa;border-radius:999px;padding:8px 10px;font-size:12px;font-weight:800;color:#24314e}
+.mobilityTag.on{background:#14203d;color:#fff;border-color:#14203d}
+.mobilityTip{
+  background:#edf4ff;border-radius:17px;padding:13px 14px;margin:12px 0;color:#16386b;
+  font-size:13px;line-height:1.4
+}
+.mobilityLinks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.mobilityLinks a,.mobilityLinks button{
+  text-decoration:none;border:0;border-radius:14px;padding:12px 10px;font-size:12px;font-weight:850;text-align:center
+}
+.mobilityLinks a{background:#14203d;color:#fff}.mobilityLinks button{background:#edf0f5;color:#14203d}
+.routeChoices{display:grid;gap:10px;margin:14px 0}
+.routeChoice{
+  background:#fff;border:1px solid #ddd9d3;border-radius:21px;padding:15px;color:#14203d
+}
+.routeChoiceTop{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center}
+.routeChoiceIcon{width:42px;height:42px;border-radius:13px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:22px}
+.routeChoice b{display:block;font-size:16px}.routeChoice small{display:block;color:#6d7687;line-height:1.35;margin-top:3px}
+.routeChoice .openRoute{
+  display:block;margin-top:12px;text-decoration:none;background:#111a2d;color:#fff;
+  padding:11px 13px;border-radius:13px;font-weight:850;font-size:13px;text-align:center
+}
+.routeChoice .secondaryRoute{
+  display:block;margin-top:7px;text-decoration:none;background:#eef1f5;color:#15213d;
+  padding:10px 13px;border-radius:13px;font-weight:800;font-size:12px;text-align:center
+}
+.routeLiveNotice{
+  background:#fff7df;border:1px solid #f0dfad;border-radius:17px;padding:12px 13px;
+  color:#5f4a14;font-size:12px;line-height:1.45;margin:10px 0
+}
+.ticketPick{
+  display:grid;grid-template-columns:44px 1fr;gap:11px;align-items:start;
+  border:1px solid #dfddd8;border-radius:18px;padding:13px;margin:9px 0;background:#fff
+}
+.ticketPickIcon{width:44px;height:44px;border-radius:14px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:22px}
+.ticketPick b{display:block}.ticketPick small{display:block;color:#6d7586;line-height:1.4;margin-top:3px}
+.ticketActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.ticketActions a,.ticketActions button{
+  border:0;text-decoration:none;background:#14203d;color:#fff;border-radius:12px;
+  padding:9px 11px;font-size:11px;font-weight:850
+}
+.ticketActions button{background:#edf0f5;color:#14203d}
+
+/* vyva-mobility-collapse-css */
+.mobilityAccordion{
+  background:#fff;border:1px solid #dfdcd7;border-radius:24px;margin:0 0 14px;
+  color:#14203d;box-shadow:0 5px 18px #0000000b;overflow:hidden
+}
+.mobilityAccordionHead{
+  width:100%;border:0;background:#fff;color:#14203d;padding:17px 18px;
+  display:grid;grid-template-columns:1fr 30px;gap:12px;align-items:center;text-align:left
+}
+.mobilityAccordionHead strong{font-size:20px;line-height:1.2}
+.mobilityAccordionHead small{display:block;color:#6b7486;font-size:13px;margin-top:5px;line-height:1.35}
+.mobilityAccordionChevron{
+  width:30px;height:30px;border-radius:50%;background:#eef1f5;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  transition:transform .22s ease
+}
+.mobilityAccordion.open .mobilityAccordionChevron{transform:rotate(180deg)}
+.mobilityAccordionBody{display:none;padding:0 17px 17px}
+.mobilityAccordion.open .mobilityAccordionBody{display:block}
+.mobilityAccordionBody .mobilityAdvisor{
+  margin:0;padding:0;border:0;box-shadow:none;background:transparent
+}
+
+/* vyva-personal-move-summary-css */
+.personalMoveSummary{
+  margin:0 0 12px;padding:13px 14px;border-radius:17px;
+  background:#eef4ff;color:#17386b;font-size:13px;line-height:1.42
+}
+.personalMoveSummary b{color:#112b57}
+
+/* vyva-arrival-guide-css */
+.arrivalAccordion{
+  background:#fff;border:1px solid #dfdcd7;border-radius:24px;margin:0 0 14px;
+  color:#14203d;box-shadow:0 5px 18px #0000000b;overflow:hidden
+}
+.arrivalAccordionHead{
+  width:100%;border:0;background:#fff;color:#14203d;padding:17px 18px;
+  display:grid;grid-template-columns:1fr 30px;gap:12px;align-items:center;text-align:left
+}
+.arrivalAccordionHead strong{font-size:19px;line-height:1.2}
+.arrivalAccordionHead small{display:block;color:#6b7486;font-size:13px;margin-top:5px;line-height:1.35}
+.arrivalAccordionChevron{
+  width:30px;height:30px;border-radius:50%;background:#eef1f5;
+  display:flex;align-items:center;justify-content:center;font-size:20px;transition:transform .22s ease
+}
+.arrivalAccordion.open .arrivalAccordionChevron{transform:rotate(180deg)}
+.arrivalAccordionBody{display:none;padding:0 17px 17px}
+.arrivalAccordion.open .arrivalAccordionBody{display:block}
+.arrivalStep{
+  display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;
+  padding:11px 0;border-bottom:1px solid #ece9e4
+}
+.arrivalStep:last-child{border-bottom:0}
+.arrivalNum{
+  width:30px;height:30px;border-radius:50%;background:#14203d;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900
+}
+.arrivalStep b{display:block;font-size:14px}
+.arrivalStep small{display:block;color:#687187;font-size:12px;line-height:1.42;margin-top:3px}
+.arrivalButtons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.arrivalButtons a{
+  text-decoration:none;border-radius:13px;padding:11px;text-align:center;
+  font-size:11px;font-weight:850;background:#14203d;color:#fff
+}
+.arrivalButtons a.secondary{background:#edf0f5;color:#14203d}
+.arrivalCaution{
+  background:#fff7df;border:1px solid #f0dfad;color:#5f4a14;
+  border-radius:15px;padding:11px 12px;font-size:12px;line-height:1.4;margin-top:10px
+}
+
+/* vyva-trip-arrival-hub-css */
+.tripArrivalHub{margin:12px 0}
+.arrivalHubCard{
+  background:rgba(255,255,255,.98);color:#102047;border-radius:24px;
+  box-shadow:0 7px 24px #00000016;overflow:hidden
+}
+.arrivalHubHead{
+  width:100%;border:0;background:transparent;color:#102047;padding:16px 17px;
+  display:grid;grid-template-columns:48px 1fr 32px;gap:11px;align-items:center;text-align:left
+}
+.arrivalHubHeadIcon{
+  width:48px;height:48px;border-radius:15px;background:#e9f2ff;
+  display:flex;align-items:center;justify-content:center;font-size:25px
+}
+.arrivalHubHead b{display:block;font-size:18px}
+.arrivalHubHead small{display:block;color:#6d7585;font-size:12px;line-height:1.35;margin-top:3px}
+.arrivalHubChevron{
+  width:30px;height:30px;border-radius:50%;background:#eef1f5;
+  display:flex;align-items:center;justify-content:center;font-size:20px;transition:transform .2s ease
+}
+.arrivalHubCard.open .arrivalHubChevron{transform:rotate(180deg)}
+.arrivalHubBody{display:none;padding:0 16px 16px}
+.arrivalHubCard.open .arrivalHubBody{display:block}
+.arrivalHubSummary{
+  background:#edf4ff;color:#17386b;border-radius:16px;padding:12px 13px;
+  font-size:12px;line-height:1.42;margin-bottom:11px
+}
+.arrivalHubModes{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.arrivalHubMode{
+  border:1px solid #dedbd6;border-radius:16px;background:#fff;color:#17213d;
+  padding:12px 10px;text-align:left
+}
+.arrivalHubMode.on{border:2px solid #17213d;padding:11px 9px;background:#f6f8fb}
+.arrivalHubMode span{font-size:23px;display:block;margin-bottom:5px}
+.arrivalHubMode b{display:block;font-size:13px}
+.arrivalHubMode small{display:block;color:#747c8c;font-size:10px;margin-top:2px;line-height:1.3}
+.arrivalHubDetail{
+  background:#fff;border:1px solid #e0ddd8;border-radius:18px;padding:14px;margin-top:10px
+}
+.arrivalHubDetail h4{margin:0 0 6px;font-size:17px;color:#12203e}
+.arrivalHubMeta{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+.arrivalHubMeta span{
+  background:#eef2f7;border-radius:999px;padding:6px 8px;font-size:10px;
+  font-weight:850;color:#35425f
+}
+.arrivalHubDetail p{margin:7px 0;color:#687187;font-size:12px;line-height:1.45}
+.arrivalHubDetail ul{margin:8px 0 0;padding-left:18px;color:#596275;font-size:12px;line-height:1.45}
+.arrivalHubActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}
+.arrivalHubActions a,.arrivalHubActions button{
+  text-decoration:none;border:0;border-radius:13px;padding:11px 9px;text-align:center;
+  font-size:11px;font-weight:850
+}
+.arrivalHubActions a{background:#14203d;color:#fff}
+.arrivalHubActions button{background:#edf0f5;color:#14203d}
+.arrivalHubNote{
+  margin-top:10px;font-size:10px;color:#808796;line-height:1.4
+}
+
+/* vyva-flight-wallet-css */
+.flightWalletCard{
+  width:100%;border:0;background:#fff;border:1px solid #e0ddd8;border-radius:22px;
+  padding:15px;margin:9px 0;display:grid;grid-template-columns:46px 1fr 22px;
+  gap:12px;align-items:center;text-align:left;color:#14203d
+}
+.flightWalletCard:active{background:#f7f8fa}
+.flightWalletCard .fwIcon{
+  width:46px;height:46px;border-radius:14px;background:#eaf2ff;
+  display:flex;align-items:center;justify-content:center;font-size:23px
+}
+.flightWalletCard b{display:block;font-size:16px}
+.flightWalletCard small{display:block;color:#6f7787;line-height:1.35;margin-top:3px}
+.flightWalletChevron{font-size:28px;color:#8a92a3}
+.flightDetailHero{
+  background:#11192d;color:#fff;border-radius:25px;padding:18px;margin:10px 0 14px
+}
+.flightDetailHero small{display:block;color:#bfc8d9;font-size:12px}
+.flightDetailHero h2{font-size:26px;margin:6px 0 4px}
+.flightDetailHero p{margin:0;color:#d5dbe7;font-size:13px;line-height:1.4}
+.flightDetailMeta{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.flightDetailMeta span{
+  background:#ffffff18;border:1px solid #ffffff25;border-radius:999px;
+  padding:6px 9px;font-size:10px;font-weight:800
+}
+.walletBack{
+  border:0;background:#edf0f5;color:#14203d;border-radius:14px;padding:11px 13px;
+  font-size:12px;font-weight:850;margin-bottom:8px
+}
+.checkinCard{
+  background:#eef4ff;color:#17386b;border-radius:19px;padding:14px;margin:11px 0;
+  font-size:13px;line-height:1.45
+}
+.checkinCard strong{display:block;font-size:15px;margin-bottom:3px}
+.checkinActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.checkinActions a,.checkinActions button{
+  border:0;text-decoration:none;border-radius:12px;padding:10px 12px;font-size:11px;
+  font-weight:850;background:#14203d;color:#fff
+}
+.checkinActions button{background:#e0e7f2;color:#14203d}
+.travelerDocCard{
+  background:#fff;border:1px solid #e0ddd8;border-radius:21px;padding:15px;margin:10px 0
+}
+.travelerDocHead{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.travelerAvatar{
+  width:40px;height:40px;border-radius:50%;background:#edf2f7;display:flex;
+  align-items:center;justify-content:center;font-weight:900;color:#20304f
+}
+.travelerDocHead b{display:block;font-size:15px}
+.travelerDocHead small{display:block;color:#747b88;font-size:11px;margin-top:2px}
+.docSlot{
+  border:1px dashed #cfd3da;border-radius:16px;padding:12px;margin-top:8px;
+  display:grid;grid-template-columns:36px 1fr auto;gap:9px;align-items:center
+}
+.docSlotIcon{
+  width:36px;height:36px;border-radius:11px;background:#f0f3f7;display:flex;
+  align-items:center;justify-content:center;font-size:18px
+}
+.docSlot b{font-size:12px;display:block}
+.docSlot small{font-size:10px;color:#777f8e;display:block;margin-top:2px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.docSlot button{
+  border:0;border-radius:11px;padding:9px 10px;font-size:10px;font-weight:850;
+  background:#14203d;color:#fff
+}
+.docSlotActions{display:flex;gap:6px}
+.docSlotActions button.secondary{background:#edf0f5;color:#14203d}
+.docSlotActions button.danger{background:#f8e9eb;color:#9e2634}
+.generalBookingCard{
+  background:#fff;border:1px solid #e0ddd8;border-radius:20px;padding:14px;margin:10px 0
+}
+.generalBookingCard b{display:block}
+.generalBookingCard small{display:block;color:#707889;margin-top:3px;line-height:1.35}
+.walletInfoNote{
+  font-size:11px;color:#737b8a;line-height:1.45;margin:11px 2px
+}
+
+/* vyva-active-flight-css */
+.flightWhiteCard{cursor:pointer}
+.flightStatusChip{display:inline-flex;align-items:center;gap:5px;margin-top:6px;border-radius:999px;padding:5px 8px;background:#eef4ff;color:#244978;font-size:10px;font-weight:850}
+.flightOpsCard{background:#fff;border:1px solid #e0ddd8;border-radius:20px;padding:14px;margin:11px 0}
+.flightOpsGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.flightOpsGrid label{display:block;font-size:10px;font-weight:850;color:#657086;margin-bottom:5px}
+.flightOpsGrid input{width:100%;border:1px solid #d9d6d1;border-radius:13px;padding:11px 10px;background:#fafafa;color:#13203d;font-size:14px}
+.flightOpsSave{width:100%;border:0;border-radius:14px;padding:12px;margin-top:10px;background:#14203d;color:#fff;font-weight:850}
+.flightOpsHint{font-size:10px;color:#7a8291;line-height:1.4;margin-top:8px}
+
+/* vyva-wallet-accordion-css */
+.walletAccordion{background:#fff;border:1px solid #e0ddd8;border-radius:22px;margin:10px 0;overflow:hidden}
+.walletAccordionHead{width:100%;border:0;background:#fff;color:#14203d;padding:15px 16px;display:grid;grid-template-columns:44px 1fr 28px;gap:11px;align-items:center;text-align:left}
+.walletAccordionIcon{width:44px;height:44px;border-radius:14px;background:#edf2f7;display:flex;align-items:center;justify-content:center;font-size:22px}
+.walletAccordionHead b{display:block;font-size:16px}
+.walletAccordionHead small{display:block;color:#737b8b;font-size:11px;line-height:1.35;margin-top:2px}
+.walletAccordionChevron{width:28px;height:28px;border-radius:50%;background:#eef1f5;display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform .2s ease}
+.walletAccordion.open .walletAccordionChevron{transform:rotate(180deg)}
+.walletAccordionBody{display:none;padding:0 14px 14px}
+.walletAccordion.open .walletAccordionBody{display:block}
+.walletAccordionBody .flightWalletCard{margin:8px 0}
+.walletEmpty{background:#f7f8fa;border-radius:16px;padding:13px;color:#737b8b;font-size:12px;line-height:1.4}
+.bookingFilesList{display:grid;gap:8px;margin-top:10px}
+.addBookingFileBtn{width:100%;border:0;border-radius:13px;padding:11px;margin-top:10px;background:#14203d;color:#fff;font-size:11px;font-weight:850}
+.docPreviewOverlay{position:fixed;z-index:5000;inset:0;background:rgba(5,12,25,.82);display:flex;align-items:center;justify-content:center;padding:20px}
+.docPreviewOverlay.hide{display:none}
+.docPreviewCard{width:min(720px,100%);max-height:90vh;background:#fff;border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.docPreviewHead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;border-bottom:1px solid #ece9e4}
+.docPreviewHead b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.docPreviewHead button{border:0;border-radius:12px;background:#edf0f5;color:#14203d;padding:8px 10px;font-weight:850}
+.docPreviewBody{min-height:260px;max-height:70vh;display:flex;align-items:center;justify-content:center;background:#f2f3f5;overflow:auto}
+.docPreviewBody img{max-width:100%;height:auto;display:block}
+.docPreviewBody iframe{width:100%;height:68vh;border:0;background:#fff}
+.docPreviewFoot{padding:11px 14px;display:flex;gap:8px}
+.docPreviewFoot a{flex:1;text-align:center;text-decoration:none;background:#14203d;color:#fff;border-radius:12px;padding:10px;font-size:11px;font-weight:850}
+
+/* vyva-flight-lifecycle-css */
+.flightLifecycleAlert{
+  display:none;background:rgba(255,255,255,.98);color:#102047;border-radius:24px;
+  padding:16px 17px;margin:0 0 12px;box-shadow:0 7px 24px #00000016;
+  grid-template-columns:46px 1fr 28px;gap:11px;align-items:center;text-align:left
+}
+.flightLifecycleAlert.show{display:grid}
+.flightLifecycleAlert .flaIcon{
+  width:46px;height:46px;border-radius:14px;background:#eaf2ff;
+  display:flex;align-items:center;justify-content:center;font-size:23px
+}
+.flightLifecycleAlert b{display:block;font-size:16px}
+.flightLifecycleAlert small{display:block;color:#6d7585;font-size:12px;line-height:1.35;margin-top:3px}
+.flightLifecycleAlert .flaChevron{font-size:28px;color:#8a92a3}
+.flightStatusChip.checkin{background:#fff1d8;color:#8a5d08}
+.flightStatusChip.returnReady{background:#e7f7ee;color:#117444}
+
+/* vyva-airport-transfer-lifecycle-css */
+.arrivalHubSavedNote{
+  background:#eaf7ef;color:#17683c;border-radius:15px;padding:11px 12px;
+  font-size:12px;line-height:1.4;margin-top:10px
+}
+.walletMiniLink{
+  display:inline-block;margin-top:7px;text-decoration:none;background:#edf0f5;color:#14203d;
+  border-radius:10px;padding:7px 9px;font-size:10px;font-weight:850
+}
+
+/* vyva-global-places-css */
+.devPlacesCard{
+  background:#fff;border:1px solid #dfdcd7;border-radius:22px;padding:16px;margin:12px 0
+}
+.devPlacesCard h3{margin:0 0 6px;font-size:18px;color:#14203d}
+.devPlacesCard p{margin:0;color:#687187;font-size:12px;line-height:1.45}
+.devPlacesRow{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}
+.devPlacesRow input{
+  width:100%;border:1px solid #d9d6d1;border-radius:13px;padding:11px 12px;
+  background:#fafafa;color:#14203d;font-size:13px
+}
+.devPlacesRow button{
+  border:0;border-radius:13px;padding:11px 13px;background:#14203d;color:#fff;
+  font-size:11px;font-weight:850
+}
+.devPlacesStatus{
+  margin-top:9px;padding:10px 11px;border-radius:13px;background:#f2f5f8;
+  color:#5e687b;font-size:11px;line-height:1.4
+}
+.devPlacesStatus.ok{background:#eaf7ef;color:#17683c}
+.globalSearchBadge{
+  display:inline-flex;align-items:center;gap:5px;border-radius:999px;
+  padding:5px 8px;background:#eef4ff;color:#244978;font-size:10px;font-weight:850
+}
+
+/* vyva-live-routing-css */
+.moveModes{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:14px 0}
+.moveMode.walkFull{grid-column:1/-1}
+.liveJourneyCard{
+  background:#fff;border:1px solid #ddd9d3;border-radius:22px;padding:16px;
+  margin:12px 0;color:#14203d
+}
+.liveJourneyHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.liveJourneyHead b{display:block;font-size:18px}
+.liveJourneyHead small{display:block;color:#6e7788;line-height:1.4;margin-top:3px}
+.liveJourneyDuration{
+  white-space:nowrap;background:#eef2f7;border-radius:999px;padding:7px 10px;
+  font-size:12px;font-weight:900
+}
+.liveJourneyLoading{
+  background:#f4f6f8;border-radius:16px;padding:13px;color:#687187;font-size:12px
+}
+.journeyTimeline{margin-top:15px}
+.journeyLeg{display:grid;grid-template-columns:42px 1fr;gap:11px;position:relative;padding-bottom:14px}
+.journeyLeg:not(:last-child):before{
+  content:"";position:absolute;left:20px;top:42px;bottom:0;width:2px;background:#d9dee7
+}
+.journeyLegIcon{
+  width:42px;height:42px;border-radius:13px;background:#edf2f7;display:flex;
+  align-items:center;justify-content:center;font-size:21px;z-index:1
+}
+.journeyLegBody{min-width:0}
+.journeyLegTitle{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.journeyLegTitle b{font-size:15px}
+.journeyLineBadge{
+  display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;
+  color:#fff;font-size:10px;font-weight:900;background:#35425f
+}
+.journeyLegMeta{color:#6b7484;font-size:11px;line-height:1.4;margin-top:3px}
+.journeyLegInstruction{font-size:12px;line-height:1.42;margin-top:5px;color:#303a4d}
+.journeyWarning{
+  margin-top:7px;background:#fff1df;color:#7b4b08;border-radius:11px;padding:8px 9px;
+  font-size:11px;line-height:1.35
+}
+.journeyActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.journeyActions a,.journeyActions button{
+  border:0;border-radius:13px;padding:11px;text-align:center;text-decoration:none;
+  font-size:12px;font-weight:850
+}
+.journeyActions a{background:#111a2d;color:#fff}
+.journeyActions button{background:#e9edf3;color:#172033}
+.routeModeHint{
+  background:#f5f7fa;border-radius:15px;padding:11px 12px;font-size:11px;
+  color:#657084;line-height:1.4;margin-bottom:10px
+}
+
+/* vyva-active-trip-session-css */
+.tripTopMenu{
+  position:absolute;z-index:45;top:82px;right:22px;width:215px;padding:7px;
+  border-radius:18px;background:rgba(255,255,255,.98);box-shadow:0 14px 36px #0004;
+  backdrop-filter:blur(18px);color:#172033
+}
+.tripTopMenu.hide{display:none}
+.tripTopMenu button{
+  width:100%;border:0;background:transparent;text-align:left;padding:12px 11px;
+  border-radius:11px;color:#172033;font-size:14px;font-weight:780
+}
+.tripTopMenu button:active{background:#eef1f5}
+.tripTopMenu button.danger{color:#a31f2c}
+.tripTopMenu hr{border:0;border-top:1px solid #e7e4df;margin:5px 4px}
+.coverEditOverlay{
+  position:fixed;z-index:110;inset:0;background:rgba(10,16,29,.56);backdrop-filter:blur(8px);
+  display:flex;align-items:flex-end;justify-content:center
+}
+.coverEditOverlay.hide{display:none}
+.coverEditSheet{
+  width:min(680px,100%);max-height:88vh;overflow:auto;background:#f7f6f3;color:#172033;
+  border-radius:28px 28px 0 0;padding:18px 18px calc(24px + env(safe-area-inset-bottom));
+  box-shadow:0 -15px 50px #0005
+}
+.coverEditHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.coverEditHead h2{margin:0;font-size:23px}
+.coverEditClose{width:38px;height:38px;border:0;border-radius:50%;background:#e8e9ec;font-size:20px;color:#172033}
+.coverEditGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.coverEditChoice{
+  height:210px;border:3px solid transparent;border-radius:20px;background-size:cover;background-position:center;
+  position:relative;overflow:hidden
+}
+.coverEditChoice:after{content:"";position:absolute;inset:55% 0 0;background:linear-gradient(transparent,#0009)}
+.coverEditChoice.on{border-color:#172033}
+.coverEditChoice span{position:absolute;z-index:2;left:11px;right:11px;bottom:10px;color:#fff;font-weight:850;text-align:left;text-shadow:0 1px 6px #000}
+@media(max-width:390px){.tripTopMenu{right:16px;top:78px}.coverEditChoice{height:185px}}
+
+/* vyva-discover-css */
+.discoverHero{
+  background:linear-gradient(135deg,#17213a,#3f526e);
+  color:#fff;border-radius:25px;padding:20px;margin-bottom:14px;
+  box-shadow:0 12px 30px #17213a22
+}
+.discoverHero small{display:block;opacity:.78;font-size:11px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+.discoverHero h2{font-size:28px;margin:5px 0 6px}
+.discoverHero p{margin:0;opacity:.9;line-height:1.45;font-size:13px}
+.discoverGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}
+.discoverTile{
+  min-height:105px;border:1px solid #dfdcd7;background:#fff;border-radius:20px;
+  padding:14px;text-align:left;color:#17213a
+}
+.discoverTile .di{display:block;font-size:25px;margin-bottom:9px}
+.discoverTile b{display:block;font-size:15px;line-height:1.15}
+.discoverTile small{display:block;color:#778092;font-size:10px;line-height:1.35;margin-top:4px}
+.discoverSectionTitle{font-size:20px;color:#17213a;margin:19px 3px 10px}
+.discoverPlace{
+  background:#fff;border:1px solid #dfdcd7;border-radius:20px;padding:14px;margin:9px 0;color:#17213a
+}
+.discoverPlaceTop{display:flex;gap:11px;align-items:flex-start}
+.discoverPlaceIcon{
+  width:44px;height:44px;flex:0 0 44px;border-radius:14px;background:#eef2f7;
+  display:flex;align-items:center;justify-content:center;font-size:22px
+}
+.discoverPlace b{font-size:16px}
+.discoverPlace p{margin:4px 0 0;color:#6d7688;font-size:11px;line-height:1.45}
+.discoverActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}
+.discoverActions button{
+  border:0;border-radius:12px;padding:10px 8px;font-size:10px;font-weight:850
+}
+.discoverActions .primary{background:#17213a;color:#fff}
+.discoverActions .secondary{background:#edf0f5;color:#17213a}
+.discoverBack{
+  border:0;background:#eef1f5;color:#17213a;border-radius:12px;padding:9px 12px;
+  font-size:11px;font-weight:850;margin-bottom:10px
+}
+.discoverInfo{
+  background:#fff;border:1px solid #dfdcd7;border-radius:19px;padding:14px;margin:9px 0;
+  color:#17213a;font-size:12px;line-height:1.48
+}
+.discoverInfo b{display:block;margin-bottom:3px}
+.itinerarySaved{
+  background:#fff;border:1px solid #dfdcd7;border-radius:18px;padding:13px;margin:8px 0;
+  display:flex;gap:10px;align-items:center;color:#17213a
+}
+.itinerarySaved .copy{flex:1;min-width:0}
+.itinerarySaved b{display:block;font-size:14px}
+.itinerarySaved small{color:#737d90;font-size:10px}
+.itinerarySaved button{border:0;border-radius:10px;padding:8px;font-size:10px;font-weight:850}
+.itinerarySaved .go{background:#17213a;color:#fff}
+.itinerarySaved .remove{background:#f4e9ea;color:#9d2936}
+@media(max-width:380px){.discoverGrid{grid-template-columns:1fr 1fr}.discoverTile{min-height:98px}}
+
+/* vyva-move-london-map-css */
+.londonTubeMapCard{
+  border:1px solid #ddd9d3;background:#fff;border-radius:22px;padding:15px;
+  margin:13px 0;color:#17213a
+}
+.londonTubeMapTop{display:flex;align-items:flex-start;gap:11px}
+.londonTubeMapIcon{
+  width:46px;height:46px;flex:0 0 46px;border-radius:15px;background:#edf2f8;
+  display:flex;align-items:center;justify-content:center;font-size:24px
+}
+.londonTubeMapTop span:nth-child(2){flex:1;min-width:0}
+.londonTubeMapTop b{display:block;font-size:17px}
+.londonTubeMapTop small{display:block;color:#737d8f;font-size:11px;line-height:1.42;margin-top:3px}
+.londonTubeMapActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.londonTubeMapActions a{
+  display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;
+  border-radius:13px;padding:11px 8px;font-size:10px;font-weight:850
+}
+.londonTubeMapActions a:first-child{background:#17213a;color:#fff}
+.londonTubeMapActions a:last-child{background:#edf0f5;color:#17213a}
+.journeyMapWrap{
+  margin-top:13px;border:1px solid #dfe3e9;border-radius:18px;overflow:hidden;background:#f4f6f8
+}
+.journeyMapHead{padding:11px 12px;background:#fff;border-bottom:1px solid #e4e7ec}
+.journeyMapHead b{display:block;font-size:13px;color:#17213a}
+.journeyMapHead small{display:block;color:#747e90;font-size:10px;line-height:1.35;margin-top:2px}
+#vyvaJourneyMap{height:260px;width:100%;background:#eef1f4}
+.journeyMapFallback{padding:18px;color:#6d7788;font-size:11px;line-height:1.45}
+.journeyWalkSummary{
+  display:flex;align-items:center;gap:7px;margin-top:9px;padding:9px 10px;
+  background:#f2f5f8;border-radius:12px;color:#39445a;font-size:10px;font-weight:750
+}
+@media(max-width:380px){
+  .londonTubeMapActions{grid-template-columns:1fr}
+  #vyvaJourneyMap{height:230px}
+}
+
+/* vyva-wallet-flights-v2-css */
+:root{--wallet-airline-accent:#14203d;--wallet-airline-text:#fff}
+body.walletAirlineTheme #bottomNav button[data-t="Wallet"]{color:var(--wallet-airline-accent)!important}
+body.walletAirlineTheme #bottomNav button[data-t="Wallet"] .navIcon{color:var(--wallet-airline-accent)!important}
+body.walletAirlineTheme #bottomNav button[data-t="Wallet"] svg{stroke:currentColor;fill:none}
+body.walletAirlineTheme #bottomNav button[data-t="Wallet"] .filled svg{fill:currentColor}
+body.walletAirlineTheme #bottomNav{background:#fff!important;border-top:2px solid var(--wallet-airline-accent)}
+body.walletAirlineTheme #bottomNav button,
+body.walletAirlineTheme #bottomNav .navIcon{color:var(--wallet-airline-accent)!important}
+body.walletAirlineTheme #bottomNav button:not(.on){opacity:.72}
+body.walletAirlineTheme #bottomNav button.on{opacity:1}
+body.walletAirlineTheme .airlineBookingCard,
+body.walletAirlineTheme .boardingWalletShell{background:#fff;color:#171717;border-color:#e9e9e9}
+body.walletAirlineTheme .bookingReference{border-color:#eee}
+body.walletAirlineTheme .bookingReference span,
+body.walletAirlineTheme .bookingDateNo,
+body.walletAirlineTheme .bookingAirportInfo span,
+body.walletAirlineTheme .bookingTerminalRow span,
+body.walletAirlineTheme .bookingPaxRow small,
+body.walletAirlineTheme .boardingWalletTop small{color:#686b70}
+body.walletAirlineTheme .bookingReference b{color:#171717}
+body.walletAirlineTheme .bookingPaxRow{background:#fff;color:#171717;border-color:#eee}
+body.walletAirlineTheme .bookingPaxDetail,
+body.walletAirlineTheme .checkinFutureCard{background:#f4f4f4;color:#171717;border-color:#eee}
+body.walletAirlineTheme .checkinLiveCard,
+body.walletAirlineTheme .boardingWalletAdd,
+body.walletAirlineTheme .boardingSlideActions .open{background:var(--wallet-airline-accent);color:var(--wallet-airline-text)}
+body.walletAirlineTheme .checkinLiveCard a{color:#171717}
+
+.flightWalletCompact{
+  position:relative;width:100%;border:1px solid #dfdcd7;background:#fff;color:#14203d;
+  border-radius:999px;padding:13px 18px;margin:9px 0;min-height:62px;
+  display:grid;grid-template-columns:1fr 54px 1fr;align-items:center;gap:9px;
+  text-align:center;overflow:visible
+}
+.flightWalletCompact:active{transform:scale(.995);background:#fafafa}
+.flightWalletCompact .airportCode{font-size:21px;font-weight:900;letter-spacing:.03em}
+.flightWalletCompact .airportCode:last-child{text-align:right}
+.flightWalletCompact .airportCode:first-child{text-align:left}
+.flightWalletCompact .routePlane{font-size:22px;position:relative;display:flex;align-items:center;justify-content:center}
+.flightWalletCompact .routePlane:before,.flightWalletCompact .routePlane:after{
+  content:"";height:1px;background:#9ba2af;position:absolute;width:22px;top:50%
+}
+.flightWalletCompact .routePlane:before{right:42px}.flightWalletCompact .routePlane:after{left:42px}
+.flightMissingBadge{
+  position:absolute;right:-3px;top:-7px;width:25px;height:25px;border-radius:50%;
+  background:#e52d39;color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:950;box-shadow:0 4px 10px #e52d3955
+}
+
+.flightSetupCard,.flightBookingShell,.boardingWalletShell{
+  border-radius:24px;margin:10px 0 15px;overflow:hidden
+}
+.flightMissingAlert{
+  display:grid;grid-template-columns:44px 1fr 22px;gap:10px;align-items:center;
+  background:#fff;border:1px solid #efd1d4;border-radius:18px;padding:13px;margin:10px 0;color:#32191c
+}
+.flightMissingAlert .bang{
+  width:40px;height:40px;border-radius:50%;border:3px solid #e52d39;color:#e52d39;
+  display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900
+}
+.flightMissingAlert b{display:block;font-size:13px}.flightMissingAlert small{display:block;color:#7b666a;font-size:10px;margin-top:2px;line-height:1.35}
+.flightSetupCard{background:#fff;border:1px solid #dfdcd7;padding:16px;color:#14203d}
+.flightSetupCard h3{margin:0 0 5px;font-size:19px}.flightSetupCard p{margin:0 0 13px;color:#737b8b;font-size:11px;line-height:1.45}
+.flightSetupGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.flightSetupGrid[hidden]{display:none}
+.flightSetupGrid label{font-size:10px;font-weight:850;color:#667086;display:block}
+.flightSetupGrid input{
+  width:100%;margin-top:5px;border:1px solid #d8d5d0;border-radius:13px;padding:11px;
+  font-size:14px;background:#fafafa;color:#14203d
+}
+.flightSetupSave,.flightBookingUpload{
+  width:100%;border:0;border-radius:14px;padding:12px;margin-top:11px;font-size:12px;font-weight:900
+}
+.flightSetupSave{background:#14203d;color:#fff}
+.flightBookingUpload{background:#edf0f5;color:#14203d}
+.flightBookingDelete{
+  width:100%;border:1px solid #efc9ce;border-radius:14px;padding:12px;margin-top:9px;
+  background:#fff5f6;color:#a52334;font-size:12px;font-weight:900
+}
+.flightBookingDelete:active{background:#fdebed}
+.bookingFileMini{
+  margin-top:10px;padding:10px 11px;background:#f6f7f9;border-radius:12px;font-size:10px;color:#657086;
+  display:flex;align-items:center;gap:8px
+}
+.bookingFileMini span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bookingFileMini button{border:0;background:#f6e7e9;color:#9c2432;border-radius:9px;padding:6px 8px;font-weight:850}
+
+.airlineBookingCard{
+  background:#242526;color:#fff;border-radius:24px;overflow:hidden;border:1px solid #333;
+  box-shadow:0 12px 28px #0b102022
+}
+.airlineBrandStrip{
+  min-height:76px;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;
+  background:var(--wallet-airline-accent);color:var(--wallet-airline-text)
+}
+.airlineLogoWord{font-size:28px;font-weight:950;letter-spacing:-.04em}
+.airlineBrandStrip small{font-size:10px;font-weight:850;opacity:.9}
+.bookingReference{
+  padding:14px 17px;border-bottom:1px solid #404246;display:flex;justify-content:space-between;gap:10px;
+  align-items:center
+}
+.bookingReference span{font-size:11px;color:#c8c9cc}.bookingReference b{font-size:15px;color:#fff}
+.bookingFlightCore{padding:16px 17px}
+.bookingDateNo{display:flex;justify-content:space-between;gap:10px;color:#d5d5d7;font-size:12px;margin-bottom:13px}
+.bookingRouteLine{display:grid;grid-template-columns:1fr 76px 1fr;align-items:center;gap:8px}
+.bookingAirportCode{font-size:30px;font-weight:900;letter-spacing:.02em}
+.bookingAirportCode:last-child{text-align:right}
+.bookingPlaneLine{display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--wallet-airline-accent);position:relative}
+.bookingPlaneLine:before,.bookingPlaneLine:after{content:"";position:absolute;height:2px;width:28px;background:var(--wallet-airline-accent);top:50%}
+.bookingPlaneLine:before{right:50px}.bookingPlaneLine:after{left:50px}
+.bookingAirportInfo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:9px}
+.bookingAirportInfo>div:last-child{text-align:right}
+.bookingAirportInfo b{display:block;font-size:12px}.bookingAirportInfo span{display:block;color:#b8b9bc;font-size:11px;line-height:1.5}
+.bookingTerminalRow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.bookingTerminalRow>div:last-child{text-align:right}
+.bookingTerminalRow b{display:block;font-size:11px}.bookingTerminalRow span{display:block;color:#b8b9bc;font-size:11px;margin-top:3px}
+.bookingPaxRow{
+  width:100%;border:0;border-top:1px solid #404246;background:#242526;color:#fff;padding:14px 17px;
+  display:flex;align-items:center;gap:11px;text-align:left
+}
+.bookingPaxRow .paxIco{font-size:23px}.bookingPaxRow span:nth-child(2){flex:1}
+.bookingPaxRow b{display:block;font-size:12px}.bookingPaxRow small{display:block;color:#b8b9bc;font-size:10px;margin-top:2px}
+.bookingPaxDetail{display:none;border-top:1px solid #393b3e;padding:11px 17px;background:#1d1e1f;color:#d9dadd;font-size:10px;line-height:1.55}
+.bookingPaxDetail.show{display:block}
+
+.checkinFutureCard,.checkinLiveCard{
+  margin:12px 0;border-radius:17px;padding:14px 15px;font-size:12px;line-height:1.45
+}
+.checkinFutureCard{background:#111;color:#e8e8e8}
+.checkinLiveCard{background:#c9212e;color:#fff;box-shadow:0 8px 20px #c9212e33}
+.checkinLiveCard b,.checkinFutureCard b{display:block;font-size:14px;margin-bottom:3px}
+.checkinLiveCard a{
+  display:flex;margin-top:10px;background:#fff;color:#a21824;border-radius:12px;padding:10px 12px;
+  font-size:11px;font-weight:900;text-decoration:none;align-items:center;justify-content:center
+}
+.boardingUploadBox{
+  width:100%;border:0;border-radius:14px;padding:13px;margin:10px 0 0;
+  font-size:12px;font-weight:900;background:var(--wallet-airline-accent);color:var(--wallet-airline-text)
+}
+.boardingUploadBox[disabled]{background:#d9dce2;color:#8b919c}
+.flightDetailEdit{
+  width:100%;border:0;background:transparent;color:#8e96a5;padding:11px;font-size:10px;font-weight:800
+}
+
+.boardingWalletShell{background:#111318;color:#fff;padding:16px;border:1px solid #282c35}
+.boardingWalletTop{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.boardingWalletBrand{
+  width:42px;height:42px;border-radius:13px;background:var(--wallet-airline-accent);color:var(--wallet-airline-text);
+  display:flex;align-items:center;justify-content:center;font-weight:950;font-size:11px
+}
+.boardingWalletTop span:nth-child(2){flex:1}.boardingWalletTop b{display:block}.boardingWalletTop small{color:#9fa7b5;font-size:10px}
+.boardingWalletAdd{
+  border:0;border-radius:50%;width:38px;height:38px;background:#252a33;color:#fff;font-size:22px
+}
+.boardingSlides{
+  display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:3px 2px 10px;
+  -webkit-overflow-scrolling:touch
+}
+.boardingSlides::-webkit-scrollbar{display:none}
+.boardingSlide{
+  flex:0 0 88%;scroll-snap-align:center;background:#f7f7f7;color:#131722;border-radius:24px;
+  min-height:410px;overflow:hidden;box-shadow:0 10px 24px #0005
+}
+.boardingSlideHead{
+  padding:15px 16px;background:var(--wallet-airline-accent);color:var(--wallet-airline-text);
+  display:flex;justify-content:space-between;align-items:center;gap:10px
+}
+.boardingSlideHead b{font-size:14px}.boardingSlideHead small{font-size:10px;font-weight:800}
+.boardingSlideRoute{display:flex;align-items:center;justify-content:space-between;padding:16px;font-size:24px;font-weight:950}
+.boardingSlideRoute .plane{font-size:20px;color:var(--wallet-airline-accent)}
+.boardingSlidePreview{margin:0 14px 14px;border-radius:17px;overflow:hidden;background:#e7e9ed;min-height:260px;display:flex;align-items:center;justify-content:center}
+.boardingSlidePreview img{display:block;width:100%;height:290px;object-fit:contain;background:#fff}
+.boardingPdf{padding:30px;text-align:center;color:#536074}.boardingPdf .pdfIcon{font-size:54px;display:block;margin-bottom:12px}
+.boardingSlideActions{display:flex;gap:7px;padding:0 14px 14px}
+.boardingSlideActions button{flex:1;border:0;border-radius:11px;padding:9px;font-size:10px;font-weight:850}
+.boardingSlideActions .open{background:#17213a;color:#fff}.boardingSlideActions .delete{background:#f3e6e8;color:#9d2634}
+.boardingDots{text-align:center;color:#7f8794;font-size:10px;margin-top:3px}
+
+@media(max-width:380px){
+  .flightWalletCompact{padding:12px 15px;grid-template-columns:1fr 48px 1fr}
+  .flightSetupGrid{grid-template-columns:1fr}
+  .boardingSlide{flex-basis:92%}
+}
+
